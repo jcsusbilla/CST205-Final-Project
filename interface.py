@@ -69,3 +69,5 @@ app = QApplication([])
 win = MyWindow()
 win.show()
 sys.exit(app.exec())
+
+#hi - juan
