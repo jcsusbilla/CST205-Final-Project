@@ -48,16 +48,20 @@ def search_for_artist(token, artist_name):
     url = "https://api.spotify.com/v1/search"               # define url
     headers = get_auth_header(token)                        # get headers
     # contruct query
-    query = f"?q={artist_name}&type=artist&limit=1"          #return top 1 artist\
+    query = f"?q={artist_name}&type=artist&limit=1"          #return top 1 artist
     
     query_url = url + query
     result = get(query_url, headers=headers)
     json_result = json.loads(result.content)
     print(json_result)
 
-token = get_token()
-search_for_artist(token, "Bruno Mars")
-#print("token: " + token) #TEST
+# ******** TEST API FUNCTION CALLS ********
+token = get_token() 
+#print("token: " + token) #TEST                             # retrieve api token
+
+search_for_artist(token, "Bruno Mars")                      # search by artist
+# genre search
+# song search
 
 # --------------------- GUI INTERFACE ---------------------
 
