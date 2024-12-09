@@ -76,13 +76,20 @@ class MyWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        # top horizontal box -- group box 1 and group box 2)
         top_hbox = QHBoxLayout()                                                # create horizontal box layout for the top
+        # -------------------- ARTIST OF THE DAY SECTION --------------------
+        # top horizontal box -- group box 1 and group box 2)
         group_box_1 = QGroupBox("Artist of the Day")                            # create group box 1
+
+        # -------------------- DAILY SECTION --------------------
         group_box_2 = QGroupBox("Daily Recommendations")                        # create group box 2
+
+
+
         top_hbox.add_widget(group_box_1, stretch=1)                             # add group box 1 to the horizontal layout
         top_hbox.add_widget(group_box_2, stretch=1)                             # add group box 2 to the horizontal layout
 
+        # -------------------- PLAYLIST SECTION --------------------
         # bottom-left box -- playlist
         bottom_left_hbox = QVBoxLayout()                                        # create left vertical box
         group_box_3 = QGroupBox("Most Recent Playlist")                         # create group box 3
@@ -94,6 +101,7 @@ class MyWindow(QWidget):
         bottom_left_hbox.add_widget(button_1)
         bottom_left_hbox.add_widget(button_2)
 
+        # -------------------- MUSIC RECOMMENDATION SECTION (JC) --------------------
         # bottom right box -- music recommendation
         bottom_right_hbox = QVBoxLayout()                                       # create right vertical box
         group_box_4 = QGroupBox("Recommended")                                  # create group box 4
@@ -144,6 +152,7 @@ class MyWindow(QWidget):
         group_box_4.set_layout(group_box_4_layout)                              # assign layout to the group box
         bottom_right_hbox.add_widget(group_box_4)                               # add group box to the right vertical box
 
+        # -------------------- PUT TOGETHER LAYOUT --------------------
         # bottom horizontal layout -- holds 2 vertical boxes
         bottom_hbox = QHBoxLayout()
         bottom_hbox.add_layout(bottom_left_hbox, stretch=1)                     # equal width for bottom-left
@@ -159,6 +168,7 @@ class MyWindow(QWidget):
         self.resize(1600, 800)                                                  # set window size
         self.window_title = "CST 205 FINAL PROJECT"                             # set window title
 
+    # @ everyone ---- each button needs a slot function 
     @Slot()
     def submit_genre(self):
         genre = self.genre_le.text
