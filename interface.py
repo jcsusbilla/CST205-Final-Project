@@ -42,35 +42,8 @@ class GenreResultsWindow(QWidget):
         layout.add_widget(self.results_text)
 
         # get results
-        self.fetch_and_display_results(genre)
+        api.fetch_and_display_genre_results(self, genre)
         self.set_layout(layout)
-
-    def fetch_and_display_results(self, genre):
-        # fetch top 5 artists for specific genre and get their top 10 songs
-        # step 1: search for artists in the given genre
-        results = sp.search(q=f"genre:{genre}", type="artist", limit=5)             # only pull the first 5 artists
-        artists = results.get("artists", {}).get("items", [])
-
-        if not artists:
-            self.results_text.set_text(f"No artists found for genre: {genre}.")
-            return
-
-        # step 2: get the top 10 songs for each artist
-        output = []
-        for artist in artists:
-            artist_name = artist["name"]
-            artist_id = artist["id"]
-            output.append(f"Artist: {artist_name}")
-
-            # fetch top 10 songs
-            top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
-            for track in top_tracks[:10]:
-                output.append(f"  - {track['name']}")
-
-            output.append("")                                                   # add a blank line between artists
-
-        # step 3: display result
-        self.results_text.set_text("\n".join(output))
 
 class MyWindow(QWidget):
     def __init__(self):
@@ -123,19 +96,19 @@ class MyWindow(QWidget):
         self.artist_response_label = QLabel('')                                 # label for artist response
         artist_submit_btn.clicked.connect(self.submit_artist)
 
-        # Add Genre inputs and response to layout
+        # add genre inputs to layout
         group_box_4_layout.add_widget(genre_label)
         group_box_4_layout.add_widget(self.genre_le)
         group_box_4_layout.add_widget(genre_submit_btn)
         group_box_4_layout.add_widget(self.genre_response_label)
 
-        # Add Artist inputs and response to layout
+        # add artist inputs to layout
         group_box_4_layout.add_widget(artist_label)
         group_box_4_layout.add_widget(self.artist_le)
         group_box_4_layout.add_widget(artist_submit_btn)
         group_box_4_layout.add_widget(self.artist_response_label)
 
-        # Add remaining buttons with spacers
+        # add buttons with spacer
         mood_button = QPushButton("Mood")
         region_button = QPushButton("Region")
         weather_button = QPushButton("Weather")

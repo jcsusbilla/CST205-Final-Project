@@ -11,6 +11,33 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
+def fetch_and_display_genre_results(self, genre):
+    # fetch top 5 artists for specific genre and get their top 10 songs
+    # step 1: search for artists in the given genre
+    results = sp.search(q=f"genre:{genre}", type="artist", limit=5)             # only pull the first 5 artists
+    artists = results.get("artists", {}).get("items", [])
+
+    if not artists:
+        self.results_text.set_text(f"No artists found for genre: {genre}.")
+        return
+
+    # step 2: get the top 10 songs for each artist
+    output = []
+    for artist in artists:
+        artist_name = artist["name"]
+        artist_id = artist["id"]
+        output.append(f"Artist: {artist_name}")
+
+        # fetch top 10 songs
+        top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
+        for track in top_tracks[:10]:
+            output.append(f"  - {track['name']}")
+
+        output.append("")                                                   # add a blank line between artists
+
+    # step 3: display result
+    self.results_text.set_text("\n".join(output))
+
 
 # # --------------------- load in environment variables ---------------------
 # # pip install python-dotenv
