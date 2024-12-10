@@ -1,4 +1,10 @@
-import os
+# CST 205
+# TEAM 11483
+# MUSIC RECOMMENDATION APP
+''' JC Susbilla, Minsol Cho, Sunwoo Lee, Juan Garcia'''
+
+# API FUNCTION FILE
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import random
@@ -11,34 +17,42 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
+
 def fetch_and_display_genre_results(self, genre):
     # fetch top 5 artists for specific genre and get their top 10 songs
     # step 1: search for artists in the given genre
-    results = sp.search(q=f"genre:{genre}", type="artist", limit=5)             # only pull the first 5 artists
+    results = sp.search(q=f"genre:{genre}", type="artist", limit=5)                     # only pull the first 5 artists
     artists = results.get("artists", {}).get("items", [])
 
-    if not artists:
-        self.results_text.set_text(f"No artists found for genre: {genre}.")
+    # had some help from forums / youtube on efficient ways to pull from API
+
+    # error handling
+    if not artists:                                                                     # if not a valid artist
+        self.results_text.set_text(f"No artists found for genre: {genre}.")         
         return
 
     # step 2: get the top 10 songs for each artist
-    output = []
+    output = []                                                                         # the final output to be displayed
     for artist in artists:
-        artist_name = artist["name"]
-        artist_id = artist["id"]
-        output.append(f"Artist: {artist_name}")
+        artist_name = artist["name"]                                                    # pull and separate artist name into own variable
+        artist_id = artist["id"]                                                        # pull artist id and put into own variable
+        output.append(f"Artist: {artist_name}")                                         # i.e: "Arist: Kendrick Lamar"
 
         # fetch top 10 songs
-        top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
-        for track in top_tracks[:10]:
-            output.append(f"  - {track['name']}")
+        top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])    # list of top songs from artist
+        for track in top_tracks[:10]:                                                   # pull 10 only
+            output.append(f"  - {track['name']}")                                       # more format to output
 
-        output.append("")                                                   # add a blank line between artists
+        output.append("")                                                               # newline between artists
 
     # step 3: display result
-    self.results_text.set_text("\n".join(output))
+    self.results_text.set_text("\n".join(output))                                       # concatenate the whole string output
 
 
+
+
+
+''' old code for manually loading in API token before i discovered terminal install for spotify API'''
 # # --------------------- load in environment variables ---------------------
 # # pip install python-dotenv
 # # pip install requests
