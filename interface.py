@@ -68,9 +68,12 @@ class MyWindow(QWidget):
         super().__init__()
 
         top_hbox = QHBoxLayout()                                                # create horizontal box layout for the top
-        # -------------------- ARTIST OF THE DAY SECTION (Juan) --------------------
-        # top horizontal box -- group box 1 and group box 2)
+        # -------------------- ARTIST OF THE DAY SECTION (Juan) --------------------    
+        # top horizontal box -- group box 1 and group box 2)                    
         group_box_1 = QGroupBox("Artist of the Day")                            # create group box 1
+
+
+
 
         # -------------------- DAILY RECOMMENDATION SECTION (Minsol / Sunwoo) --------------------
         group_box_2 = QGroupBox("Daily Recommendations")                        # create group box 2
