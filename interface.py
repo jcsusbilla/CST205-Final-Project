@@ -75,12 +75,40 @@ class MyWindow(QWidget):
 
 
 
+
         # -------------------- DAILY RECOMMENDATION SECTION (Minsol / Sunwoo) --------------------
         group_box_2 = QGroupBox("Daily Recommendations")                        # create group box 2
+        group_box_2_layout = QVBoxLayout()                                      # create layout for group box 2
 
+        # Add 9 buttons to the layout manually
+        workout_button = QPushButton("Workout")                                 # create workout button
+        group_box_2_layout.add_widget(workout_button)                           # add workout button to layout
 
+        house_cleaning_button = QPushButton("House Cleaning")                   # create house cleaning button
+        group_box_2_layout.add_widget(house_cleaning_button)                    # add house cleaning button to layout
 
+        meditation_button = QPushButton("Meditation")                           # create meditation button
+        group_box_2_layout.add_widget(meditation_button)                        # add meditation button to layout
 
+        studying_button = QPushButton("Studying")                               # create studying button
+        group_box_2_layout.add_widget(studying_button)                          # add Studying button to layout
+
+        cooking_button = QPushButton("Cooking")                                 # create cooking button
+        group_box_2_layout.add_widget(cooking_button)                           # add Cooking button to layout
+
+        party_button = QPushButton("Party")                                     # create party button
+        group_box_2_layout.add_widget(party_button)                             # add party button to layout
+
+        road_trip_button = QPushButton("Road Trip")                             # create road trip button
+        group_box_2_layout.add_widget(road_trip_button)                         # add road trip button to layout
+
+        gaming_button = QPushButton("Gaming")                                   # create gaming button
+        group_box_2_layout.add_widget(gaming_button)                            # add gaming button to layout
+
+        kids_button = QPushButton("Kids")                                       # create kids button
+        group_box_2_layout.add_widget(kids_button)                              # add kids button to layout
+
+        group_box_2.set_layout(group_box_2_layout)                              # assign layout to group box 2
 
         # add boxes to top row of boxes
         top_hbox.add_widget(group_box_1, stretch=1)                             # add group box 1 to the horizontal layout
