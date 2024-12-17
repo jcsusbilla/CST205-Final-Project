@@ -4,10 +4,14 @@
 ''' JC Susbilla, Minsol Cho, Sunwoo Lee, Juan Garcia'''
 
 # API FUNCTION FILE
-
+import requests
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from PySide6.QtGui import QPixmap
 import random
+from PySide6.QtCore import Qt
+from io import BytesIO
+#from api import sp
 
 # set up API credentials and authentication
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
@@ -17,8 +21,44 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
+# def artist_results(self, artist):
+#     # search for the artist
+#     results = sp.search(q=f"artist:{artist}", type="artist", limit=1)
+#     artist_items = results.get("artists", {}).get("items", [])
 
-def fetch_and_display_genre_results(self, genre):
+#     if not artist_items:
+#         self.results_text.setText("No artist found with that name.")
+#         return
+
+#     # retrieve the artist's ID and image
+#     artist_data = artist_items[0]
+#     artist_name = artist_data["name"].title()
+#     artist_id = artist_data["id"]
+#     artist_images = artist_data.get("images", [])
+
+#     # display artist image
+#     if artist_images:
+#         image_url = artist_images[0]["url"] 
+#         response = requests.get(image_url)
+#         image = QPixmap()
+#         image.loadFromData(BytesIO(response.content).read())
+#         self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio))
+#     else:
+#         self.image_label.setText("No image available.")
+
+#     # get the artist's top 10 songs
+#     top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
+#     if not top_tracks:
+#         self.results_text.setText("No tracks available for this artist.")
+#         return
+
+#     # display the songs and align them to the center 
+#     output = [f"<div style='text-align: center;'>{i+1}. {track['name']}</div>"
+#               for i, track in enumerate(top_tracks[:10])]
+#     self.results_text.setHtml("<br>".join(output))
+    
+
+def genre_results(self, genre):
     # fetch top 5 artists for specific genre and get their top 10 songs
     # step 1: search for artists in the given genre
     results = sp.search(q=f"genre:{genre}", type="artist", limit=5)                     # only pull the first 5 artists
@@ -31,14 +71,14 @@ def fetch_and_display_genre_results(self, genre):
         self.results_text.set_text(f"No artists found for genre: {genre}.")         
         return
 
-    # step 2: get the top 10 songs for each artist
+    # get the top 10 songs for each artist
     output = []                                                                         # the final output to be displayed
     for artist in artists:
         artist_name = artist["name"]                                                    # pull and separate artist name into own variable
         artist_id = artist["id"]                                                        # pull artist id and put into own variable
         output.append(f"Artist: {artist_name}")                                         # i.e: "Arist: Kendrick Lamar"
 
-        # fetch top 10 songs
+    # fetch top 10 songs
         top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])    # list of top songs from artist
         for track in top_tracks[:10]:                                                   # pull 10 only
             output.append(f"  - {track['name']}")                                       # more format to output
@@ -47,12 +87,9 @@ def fetch_and_display_genre_results(self, genre):
 
     # step 3: display result
     self.results_text.set_text("\n".join(output))                                       # concatenate the whole string output
+    
 
-
-
-
-
-''' old code for manually loading in API token before i discovered terminal install for spotify API'''
+''' old code for manually loading in API token before i found terminal install for spotify API'''
 # # --------------------- load in environment variables ---------------------
 # # pip install python-dotenv
 # # pip install requests

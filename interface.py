@@ -18,6 +18,8 @@ import os
 import api
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from io import BytesIO
+from api import sp  # Import Spotify API instance
 
 # --------------------- GUI INTERFACE ---------------------
 
@@ -32,14 +34,41 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 # ------------------ NEW WINDOWS SECTION ------------------
 # WINDOW TO DISPLAY SPECIFIED ARTIST AND THEIR TOP 25 SONGS. ALSO SHOW AN IMAGE
 class ArtistResultsWindow(QWidget):
+    """A separate window to display an artist's image and top 25 songs."""
     def __init__(self, artist):
-        super().__init()
-        self.resize(600, 400)                                                   # resize window
-        layout = QVBoxLayout()                                                  # init layout
+        super().__init__()
+        self.resize(600, 800)
 
-        # HEADER / WINDOW TITLE
-        artist_results_label = QLabel(f"Top Songs from {artist}")               # window header
-        layout.add_widget(artist_results_label)                                 # add widget to layout
+        # Main layout
+        layout = QVBoxLayout()
+        artist = artist.title()
+        artist_name_label = QLabel(f"{artist}")
+        artist_name_label.alignment = Qt.AlignCenter
+        artist_name_label.set_style_sheet("font-size: 75px; font-weight: bold;")
+        layout.add_widget(artist_name_label)
+        
+        # artist image placeholder
+        self.image_label = QLabel()  # initialize the image label here
+        self.image_label.alignment = Qt.AlignCenter
+        layout.add_widget(self.image_label)
+
+        # header Label
+        artist_results_label = QLabel(f"Top 25 Songs from {artist}")
+        artist_results_label.alignment = Qt.AlignCenter
+        artist_results_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(artist_results_label)
+
+        # text display for top songs
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        self.set_layout(layout)
+
+        # display artist info
+        api.artist_results(self, artist)
+        
+
 
 # WINDOW TO DISPLAY GENRE'S TOP 5 ARTISTS AND EACH ARTIST TOP 10 SONGS
 class GenreResultsWindow(QWidget):  
@@ -47,7 +76,7 @@ class GenreResultsWindow(QWidget):
         super().__init__()
         self.resize(600, 400)                                                   # window header
         layout = QVBoxLayout()                                                  # init layout
-
+        
         # HEADER / WINDOW TITLE
         genre_results_label = QLabel(f"Top Artists and Songs for the {genre} Genre")
         layout.add_widget(genre_results_label)                                  #add widget to layout
@@ -58,7 +87,7 @@ class GenreResultsWindow(QWidget):
         layout.add_widget(self.results_text)                                    # add results widget to the layout
 
         # get results
-        api.fetch_and_display_genre_results(self, genre)                        #
+        api.genre_results(self, genre)
         self.set_layout(layout)
 
 
@@ -210,14 +239,15 @@ class MyWindow(QWidget):
 
     @Slot()
     def submit_artist(self):
+        """Handles the submit button for Artist."""
         artist = self.artist_le.text
         if not artist:
-            self.artist_response_label.set_text("Please enter a valid artist name.")
+            self.artist_response_label.setText("Please enter a valid artist name.")
             return
-        
+
+        # Open a new window to display artist results
         self.artist_results_window = ArtistResultsWindow(artist)
-        self.artist_results_window.show()                                       # open the window displaying artists
-        #self.artist_response_label.set_text(f"Favorite Artist: {artist}")
+        self.artist_results_window.show()
 
 # --------------------- FUNCTION CALLS ---------------------
 app = QApplication([])
