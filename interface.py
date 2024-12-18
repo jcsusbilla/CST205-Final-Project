@@ -8,7 +8,7 @@
 # IMPORTS
 import sys
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QApplication, QWidget, QLabel, QHBoxLayout, QVBoxLayout, QGroupBox, QLineEdit, QTextEdit, QPushButton, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import QApplication, QWidget, QLabel, QHBoxLayout, QComboBox, QVBoxLayout, QGroupBox, QLineEdit, QTextEdit, QPushButton, QSpacerItem, QSizePolicy
 from __feature__ import snake_case, true_property
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
@@ -32,14 +32,102 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 ))
 
 # ------------------ NEW WINDOWS SECTION ------------------
-# WINDOW TO DISPLAY SPECIFIED ARTIST AND THEIR TOP 10 SONGS. ALSO SHOW AN IMAGE AND ALBUMS
-class ArtistResultsWindow(QWidget):
-    """a new window to display an artist's image and top 10 songs."""
-    def __init__(self, artist):
+
+# WINDOW TO DISPLAY 50 SONGS BASED ON WEATHER
+class WeatherResultsWindow(QWidget):
+    def __init__(self, weather):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        weather_title_label = QLabel(f"50 Songs for {weather} Weather")
+        weather_title_label.alignment = Qt.AlignCenter
+        weather_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(weather_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.weather_results(self, weather)
+        self.set_layout(layout)
+
+# WINDOW TO DISPLAY 50 SONGS BASED ON REGION
+class RegionResultsWindow(QWidget):
+    def __init__(self, region):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        region_title_label = QLabel(f"50 Songs for {region}")
+        region_title_label.alignment = Qt.AlignCenter
+        region_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(region_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.region_results(self, region)
+        self.set_layout(layout)
+
+# WINDOW TO DISPLAY 50 SONGS BASED ON SEASON
+class SeasonResultsWindow(QWidget):
+    def __init__(self, season):
         super().__init__()
         self.resize(600, 800)
 
         # Main layout
+        layout = QVBoxLayout()
+        season_title_label = QLabel(f"50 Songs for {season}")
+        season_title_label.alignment = Qt.AlignCenter
+        season_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(season_title_label)
+
+        # Text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # Fetch and display results
+        api.season_results(self, season)
+        self.set_layout(layout)
+
+# WINDOW TO DISPLAY 50 SONGS BASED ON MOOD
+class MoodResultsWindow(QWidget):
+    def __init__(self, mood):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        mood_title_label = QLabel(f"50 Songs for {mood} Mood")
+        mood_title_label.alignment = Qt.AlignCenter
+        mood_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(mood_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.mood_results(self, mood)
+        self.set_layout(layout)
+
+# WINDOW TO DISPLAY SPECIFIED ARTIST AND THEIR TOP 10 SONGS. ALSO SHOW AN IMAGE AND ALBUMS
+class ArtistResultsWindow(QWidget):
+    def __init__(self, artist):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # main layout
         layout = QVBoxLayout()
         artist = artist.title()
         artist_name_label = QLabel(f"{artist}")
@@ -52,13 +140,6 @@ class ArtistResultsWindow(QWidget):
         self.image_label.alignment = Qt.AlignCenter
         layout.add_widget(self.image_label)
 
-        # # header Label
-        # artist_results_label = QLabel(f"Top 10 Songs from {artist}")
-        # artist_results_label.alignment = Qt.AlignCenter
-        # artist_results_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        # layout.add_widget(artist_results_label)
-
-        # text display for top songs
         self.results_text = QTextEdit()
         self.results_text.read_only = True
         layout.add_widget(self.results_text)
@@ -72,7 +153,7 @@ class ArtistResultsWindow(QWidget):
 class GenreResultsWindow(QWidget):  
     def __init__(self, genre):
         super().__init__()
-        self.resize(600, 400)                                                   # window header
+        self.resize(800, 1000)                                                  # window header
         layout = QVBoxLayout()                                                  # init layout
         genre = genre.title()
 
@@ -87,6 +168,7 @@ class GenreResultsWindow(QWidget):
         self.results_text.read_only = True                                      # set it so that text cannot be edited after being displayed
         layout.add_widget(self.results_text)                                    # add results widget to the layout
         self.results_text.alignment = Qt.AlignCenter
+
         # get results
         api.genre_results(self, genre)
         self.set_layout(layout)
@@ -109,7 +191,6 @@ class MyWindow(QWidget):
         group_box_2 = QGroupBox("Daily Recommendations")                        # create group box 2
         group_box_2_layout = QVBoxLayout()                                      # create layout for group box 2
 
-        # Add 9 buttons to the layout manually
         workout_button = QPushButton("Workout")                                 # create workout button
         group_box_2_layout.add_widget(workout_button)                           # add workout button to layout
 
@@ -164,47 +245,64 @@ class MyWindow(QWidget):
         group_box_4_layout = QVBoxLayout()                                      # create layout for elements inside the Group Box
 
         # genre entry boc with submit button
-        genre_label = QLabel("Enter a Genre:")
+        genre_label = QLabel("Enter a Genre:")                                  
         self.genre_le = QLineEdit()
-        self.genre_le.minimum_width = 250
         genre_submit_btn = QPushButton("Submit Genre")
-        self.genre_response_label = QLabel('')                                  # label for genre response
         genre_submit_btn.clicked.connect(self.submit_genre)
+        group_box_4_layout.add_widget(genre_label)
+        group_box_4_layout.add_widget(self.genre_le)
+        group_box_4_layout.add_widget(genre_submit_btn)
 
         # artist entry boc with submit button
         artist_label = QLabel("Enter an Artist:")
         self.artist_le = QLineEdit()
-        self.artist_le.minimum_width = 250
         artist_submit_btn = QPushButton("Submit Artist")
-        self.artist_response_label = QLabel('')                                 # label for artist response
         artist_submit_btn.clicked.connect(self.submit_artist)
-
-        # add genre inputs to layout
-        group_box_4_layout.add_widget(genre_label)
-        group_box_4_layout.add_widget(self.genre_le)
-        group_box_4_layout.add_widget(genre_submit_btn)
-        group_box_4_layout.add_widget(self.genre_response_label)
-
-        # add artist inputs to layout
         group_box_4_layout.add_widget(artist_label)
         group_box_4_layout.add_widget(self.artist_le)
         group_box_4_layout.add_widget(artist_submit_btn)
-        group_box_4_layout.add_widget(self.artist_response_label)
 
-        # add buttons with spacer
-        mood_button = QPushButton("Mood")
-        region_button = QPushButton("Region")
-        weather_button = QPushButton("Weather")
-        season_button = QPushButton("Season")
+        # dropdown menu for mood
+        mood_label = QLabel("Select a Mood:")
+        self.mood_dropdown = QComboBox()
+        self.mood_dropdown.add_items(["","Happy", "Sad", "Energetic", "Chill", "Romantic", "Focus", "Sleep"])
+        mood_submit_btn = QPushButton("Submit Mood")
+        mood_submit_btn.clicked.connect(self.submit_mood)
+        group_box_4_layout.add_widget(mood_label)
+        group_box_4_layout.add_widget(self.mood_dropdown)
+        group_box_4_layout.add_widget(mood_submit_btn)
 
-        group_box_4_layout.add_widget(mood_button)
-        group_box_4_layout.add_spacer_item(QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding))
-        group_box_4_layout.add_widget(region_button)
-        group_box_4_layout.add_spacer_item(QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding))
-        group_box_4_layout.add_widget(weather_button)
-        group_box_4_layout.add_spacer_item(QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding))
-        group_box_4_layout.add_widget(season_button)
+        # dropdown menu for seasons
+        season_label = QLabel("Select a Season:")
+        self.season_dropdown = QComboBox()
+        self.season_dropdown.add_items(["","Spring", "Summer", "Autumn", "Winter"])
+        season_submit_btn = QPushButton("Submit Season")
+        season_submit_btn.clicked.connect(self.submit_season)
+        group_box_4_layout.add_widget(season_label)
+        group_box_4_layout.add_widget(self.season_dropdown)
+        group_box_4_layout.add_widget(season_submit_btn)
 
+        # dropdown menu for regions
+        region_label = QLabel("Select a Region:")
+        self.region_dropdown = QComboBox()
+        self.region_dropdown.add_items(["", "United States", "United Kingdom", "Canada", "Germany", "France", "Italy", "Spain", "Japan", "Australia", "Brazil", "Mexico", "India"])
+        region_submit_btn = QPushButton("Submit Region")
+        region_submit_btn.clicked.connect(self.submit_region)
+        group_box_4_layout.add_widget(region_label)
+        group_box_4_layout.add_widget(self.region_dropdown)
+        group_box_4_layout.add_widget(region_submit_btn)
+
+        # dropdown menu for weather
+        weather_label = QLabel("Select Weather Condition:")
+        self.weather_dropdown = QComboBox()
+        self.weather_dropdown.add_items(["", "Sunny", "Rainy", "Cloudy", "Snowy", "Windy", "Foggy", "Stormy", "Clear Night"])
+        weather_submit_btn = QPushButton("Submit Weather")
+        weather_submit_btn.clicked.connect(self.submit_weather)
+        group_box_4_layout.add_widget(weather_label)
+        group_box_4_layout.add_widget(self.weather_dropdown)
+        group_box_4_layout.add_widget(weather_submit_btn)
+
+        # set layout
         group_box_4.set_layout(group_box_4_layout)                              # assign layout to the group box
         bottom_right_hbox.add_widget(group_box_4)                               # add group box to the right vertical box
 
@@ -224,8 +322,13 @@ class MyWindow(QWidget):
         self.resize(1600, 800)                                                  # set window size
         self.window_title = "CST 205 FINAL PROJECT"                             # set window title
 
-    # -------------------- SLOT FUNCTIONS FOR BUTTONS --------------------
+    # -------------------- ****** SLOT FUNCTIONS FOR BUTTONS ****** --------------------
     # @ everyone ---- each button needs a slot function 
+
+    # -------------------- DAILY RECOMMENDATION SLOTS --------------------
+
+
+    # -------------------- GENERAL RECOMMENDATIONS SLOTS --------------------
     @Slot()
     def submit_genre(self):
         genre = self.genre_le.text
@@ -239,15 +342,55 @@ class MyWindow(QWidget):
 
     @Slot()
     def submit_artist(self):
-        """Handles the submit button for Artist."""
         artist = self.artist_le.text
         if not artist:
             self.artist_response_label.setText("Please enter a valid artist name.")
             return
 
-        # Open a new window to display artist results
+        # open new window to display artist results
         self.artist_results_window = ArtistResultsWindow(artist)
         self.artist_results_window.show()
+
+    @Slot()
+    def submit_mood(self):
+        mood = self.mood_dropdown.current_text
+        if not mood:
+            return
+
+        # open a new window to display mood-based results
+        self.mood_results_window = MoodResultsWindow(mood)
+        self.mood_results_window.show()
+
+    @Slot()
+    def submit_season(self):
+        season = self.season_dropdown.current_text
+        if not season:
+            return
+
+        # open a new window to display season-based results
+        self.season_results_window = SeasonResultsWindow(season)
+        self.season_results_window.show()
+
+    @Slot()
+    def submit_region(self):
+        region = self.region_dropdown.current_text
+        if not region:
+            return
+
+        # open a new window to display region-based results
+        self.region_results_window = RegionResultsWindow(region)
+        self.region_results_window.show()
+
+    @Slot()
+    def submit_weather(self):
+        weather = self.weather_dropdown.current_text
+        if not weather:
+            return
+
+        # open a new window to display weather-based results
+        self.weather_results_window = WeatherResultsWindow(weather)
+        self.weather_results_window.show()
+    # ---------------------------------------------------------------------
 
 # --------------------- FUNCTION CALLS ---------------------
 app = QApplication([])

@@ -21,6 +21,118 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
+# --------------------- DAILY RECOMMENDATIONS SECTION ---------------------
+
+
+# --------------------- GENERAL RECOMMENDATIONS SECTION ---------------------
+def weather_results(self, weather):
+    weather_mapping = {
+        "Sunny": "sunny",
+        "Rainy": "rainy",
+        "Cloudy": "cloudy",
+        "Snowy": "snowy",
+        "Windy": "windy",
+        "Foggy": "foggy",
+        "Stormy": "stormy",
+        "Clear Night": "clear night"
+    }
+
+    weather_query = weather_mapping.get(weather, weather.lower())
+
+    #  get songs for the selected weather
+    results = sp.search(q=f"{weather_query}", type="track", limit=50)
+    tracks = results.get("tracks", {}).get("items", [])
+    random.shuffle(tracks)                                                                  # randomize so it's different every time
+
+    # format the results
+    output = [f"<div style='text-align: center; font-size: 18px;'>"
+              f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+              for i, track in enumerate(tracks)]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
+
+def region_results(self, region):
+    # map region to spotify market codes
+    region_mapping = {
+        "United States": "US",
+        "United Kingdom": "GB",
+        "Canada": "CA",
+        "Germany": "DE",
+        "France": "FR",
+        "Italy": "IT",
+        "Spain": "ES",
+        "Japan": "JP",
+        "Australia": "AU",
+        "Brazil": "BR",
+        "Mexico": "MX",
+        "India": "IN"
+    }
+
+    market_code = region_mapping.get(region, "US")                                          # default to US if region not found
+
+    # get songs for the selected region
+    results = sp.search(q="top hits", type="track", limit=50, market=market_code)
+    tracks = results.get("tracks", {}).get("items", [])
+    random.shuffle(tracks)                                                                  # randomize so it's different every time
+
+    # format the results
+    output = [f"<div style='text-align: center; font-size: 18px;'>"
+              f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+              for i, track in enumerate(tracks)]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
+
+def season_results(self, season):
+    # Map season to search queries
+    season_mapping = {
+        "Spring": "spring",
+        "Summer": "summer",
+        "Autumn": "autumn",
+        "Winter": "winter"
+    }
+    season_query = season_mapping.get(season, season.lower())
+    results = sp.search(q=f"{season_query}", type="track", limit=50)
+    tracks = results.get("tracks", {}).get("items", [])
+    random.shuffle(tracks)                                                                  # randomize so it's different every time
+
+    # format the results
+    output = [f"<div style='text-align: center; font-size: 18px;'>"
+              f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+              for i, track in enumerate(tracks)]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
+
+def mood_results(self, mood):
+    # map mood to playlist categories or keywords
+    mood_mapping = {
+        "Happy": "happy",
+        "Sad": "sad",
+        "Energetic": "workout",
+        "Chill": "chill",
+        "Romantic": "romantic",
+        "Focus": "focus",
+        "Sleep": "sleep",
+    }
+    mood_query = mood_mapping.get(mood, mood.lower())
+
+    # find the songs based on mood
+    results = sp.search(q=f"{mood_query}", type="track", limit=50)
+    tracks = results.get("tracks", {}).get("items", [])
+    random.shuffle(tracks)                                                                  # randomize so it's different every time
+
+    # format output
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(tracks)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
+
 def artist_results(self, artist):
     # search for artist
     results = sp.search(q=f"artist:{artist}", type="artist", limit=1)
@@ -32,7 +144,6 @@ def artist_results(self, artist):
 
     # retrieve the artist's ID and image
     artist_data = artist_items[0]
-    artist_name = artist_data["name"].title()
     artist_id = artist_data["id"]
     artist_images = artist_data.get("images", [])
 
@@ -43,43 +154,24 @@ def artist_results(self, artist):
         image = QPixmap()
         image.loadFromData(BytesIO(response.content).read())
         self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-    else:
-        self.image_label.setText("No image available.")
 
     # artist's top 10 songs
     top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
     output = [f"<div style='text-align: center; font-size: 45px; font-weight: bold;'>Top 10 Songs</div>"]
-    if not top_tracks:
-        output.append("<div style='text-align: center;'>No tracks available for this artist.</div>")
-    else:
-        for i, track in enumerate(top_tracks[:10]):
-            output.append(f"<div style='text-align: center; font-size: 18px;'>{i + 1}. {track['name']}</div><br>")
+    for i, track in enumerate(top_tracks[:10]):
+        output.append(f"<div style='text-align: center; font-size: 18px;'>{i + 1}. {track['name']}</div><br>")
 
     # display albums
     albums = sp.artist_albums(artist_id, album_type='album', limit=10).get('items', [])
-    output.append("<br>")  # Add spacing before albums section
+    output.append("<br>")
     output.append(f"<div style='text-align: center; font-size:45px; font-weight: bold;'>Albums</div>")
-
-    if not albums:
-        output.append("<div style='text-align: center;'>No albums available for this artist.</div>")
-    else:
-        for album in albums:
-            album_name = album["name"]
-            release_date = album.get("release_date", "Unknown Date")
-            album_images = album.get("images", [])
-
-            # add album image if available
-            # if album_images:
-            #     album_image_url = album_images[0]["url"]
-            #     album_image_html = f"<img src='{album_image_url}' style='width:150px; height:150px; margin:10px;'>"
-            # else:
-            #     album_image_html = "<div>No image available</div>"
-
-            # Combine album details
-            output.append(f"<div style='text-align: center; margin-bottom: 40px;'>"
-                          #f"{album_image_html}<br>"
-                          f"<span style='font-size: 18px; font-weight: bold;'>{album_name}</span><br>"
-                          f"Release Date: {release_date}</div>")
+    for album in albums:
+        album_name = album["name"]
+        release_date = album.get("release_date", "Unknown Date")
+        album_images = album.get("images", [])
+        output.append(f"<div style='text-align: center; margin-bottom: 40px;'>"
+                        f"<span style='font-size: 18px; font-weight: bold;'>{album_name}</span><br>"
+                        f"Release Date: {release_date}</div>")
     output.append("<br>")
 
     # Display final result
@@ -91,7 +183,7 @@ def genre_results(self, genre):
     results = sp.search(q=f"genre:{genre}", type="artist", limit=5)                                         # only pull the first 5 artists
     artists = results.get("artists", {}).get("items", [])
 
-    # had some help from forums / youtube on efficient ways to pull from API
+    # had some help from forums / youtube on efficient ways to pull from this Spotipy API
 
     # error handling
     if not artists:                                                                                         # if not a valid artist
