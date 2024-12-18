@@ -98,12 +98,8 @@ class MyWindow(QWidget):
 
         top_hbox = QHBoxLayout()                                                # create horizontal box layout for the top
         # -------------------- ARTIST OF THE DAY SECTION (Juan) --------------------    
-        # top horizontal box -- group box 1 and group box 2)                    
-        group_box_1 = QGroupBox("Artist of the Day")                            # create group box 1
-
-
-
-
+        # top horizontal box -- group box 1 and group box 2                   
+        group_box_1 = QGroupBox("Artist of the Day")# create group box 1
 
         # -------------------- DAILY RECOMMENDATION SECTION (Minsol / Sunwoo) --------------------
         group_box_2 = QGroupBox("Daily Recommendations")                        # create group box 2
@@ -142,13 +138,32 @@ class MyWindow(QWidget):
         # add boxes to top row of boxes
         top_hbox.add_widget(group_box_1, stretch=1)                             # add group box 1 to the horizontal layout
         top_hbox.add_widget(group_box_2, stretch=1)                             # add group box 2 to the horizontal layout
-
+          
 
         # -------------------- PLAYLIST SECTION (Minsol / Sunwoo) --------------------
         # bottom-left box -- playlist
         bottom_left_hbox = QVBoxLayout()                                        # create left vertical box
-        group_box_3 = QGroupBox("Most Recent Playlist")                         # create group box 3
+        group_box_3 = QGroupBox("Most Recent Playlist")                        # create group box 3
+        group_box_3_layout = QVBoxLayout()
         bottom_left_hbox.add_widget(group_box_3)                                # add group box 3 to the left vertical box
+        
+        # Add a label for the playlist title
+        playlist_label = QLabel("Your Most Recent Playlist")                    # Title for playlist section
+        playlist_label.set_style_sheet("font-size: 20px; font-weight: bold;")   # Styling for label
+        group_box_3_layout.add_widget(playlist_label)                           # Add label to layout
+        
+        # Add a text area to display playlist details
+        self.playlist_text = QTextEdit()                                        # Create text area for playlist
+        self.playlist_text.read_only = True                                     # Make text area read-only
+        group_box_3_layout.add_widget(self.playlist_text)  
+        
+        # Add a refresh button for the playlist
+        refresh_button = QPushButton("Refresh Playlist")                        # Create refresh button
+        group_box_3_layout.add_widget(refresh_button)                           # Add refresh button to layout
+
+        group_box_3.set_layout(group_box_3_layout)                              # Assign layout to group box 3
+        bottom_left_hbox.add_widget(group_box_3) 
+
 
         # buttons under the playlist box
         button_1 = QPushButton("Create Playlist")
@@ -248,6 +263,32 @@ class MyWindow(QWidget):
         # Open a new window to display artist results
         self.artist_results_window = ArtistResultsWindow(artist)
         self.artist_results_window.show()
+    @Slot()
+    def load_most_recent_playlist(self):
+        """Slot function to load and display the most recent playlist."""
+        try:
+            # Get the user's playlists from Spotify API
+            playlists = sp.current_user_playlists(limit=1)                  # Get the most recent playlist (limit = 1)
+            if playlists and playlists['items']:
+                playlist = playlists['items'][0]                            # Extract the most recent playlist
+                playlist_name = playlist['name']                            # Get playlist name
+                playlist_tracks = sp.playlist_tracks(playlist['id'])        # Get tracks in the playlist
+
+                # Clear the text area and display playlist name
+                self.playlist_text.clear()
+                self.playlist_text.append(f"Playlist: {playlist_name}\n")
+
+                # Display track names with their artists
+                for idx, item in enumerate(playlist_tracks['items']):
+                    track = item['track']
+                    self.playlist_text.append(f"{idx + 1}. {track['name']} - {', '.join(artist['name'] for artist in track['artists'])}")
+            else:
+                self.playlist_text.set_text("No recent playlists found.")
+        except Exception as e:
+            self.playlist_text.set_text(f"Error loading playlist: {str(e)}")
+    # Connect the refresh button to the slot
+
+
 
 # --------------------- FUNCTION CALLS ---------------------
 app = QApplication([])
