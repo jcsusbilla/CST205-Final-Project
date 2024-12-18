@@ -21,73 +21,90 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
-# def artist_results(self, artist):
-#     # search for the artist
-#     results = sp.search(q=f"artist:{artist}", type="artist", limit=1)
-#     artist_items = results.get("artists", {}).get("items", [])
+def artist_results(self, artist):
+    # search for the artist
+    results = sp.search(q=f"artist:{artist}", type="artist", limit=1)
+    artist_items = results.get("artists", {}).get("items", [])
 
-#     if not artist_items:
-#         self.results_text.setText("No artist found with that name.")
-#         return
+    if not artist_items:
+        self.results_text.setText("No artist found with that name.")
+        return
 
-#     # retrieve the artist's ID and image
-#     artist_data = artist_items[0]
-#     artist_name = artist_data["name"].title()
-#     artist_id = artist_data["id"]
-#     artist_images = artist_data.get("images", [])
+    # retrieve the artist's ID and image
+    artist_data = artist_items[0]
+    artist_name = artist_data["name"].title()
+    artist_id = artist_data["id"]
+    artist_images = artist_data.get("images", [])
 
-#     # display artist image
-#     if artist_images:
-#         image_url = artist_images[0]["url"] 
-#         response = requests.get(image_url)
-#         image = QPixmap()
-#         image.loadFromData(BytesIO(response.content).read())
-#         self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio))
-#     else:
-#         self.image_label.setText("No image available.")
+    # display artist image
+    if artist_images:
+        image_url = artist_images[0]["url"] 
+        response = requests.get(image_url)
+        image = QPixmap()
+        image.loadFromData(BytesIO(response.content).read())
+        self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio))
+    else:
+        self.image_label.setText("No image available.")
 
-#     # get the artist's top 10 songs
-#     top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
-#     if not top_tracks:
-#         self.results_text.setText("No tracks available for this artist.")
-#         return
+    # get the artist's top 10 songs
+    top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
+    if not top_tracks:
+        self.results_text.setText("No tracks available for this artist.")
+        return
 
-#     # display the songs and align them to the center 
-#     output = [f"<div style='text-align: center;'>{i+1}. {track['name']}</div>"
-#               for i, track in enumerate(top_tracks[:10])]
-#     self.results_text.setHtml("<br>".join(output))
+    # display the songs and align them to the center 
+    output = [f"<div style='text-align: center;'>{i+1}. {track['name']}</div>"
+              for i, track in enumerate(top_tracks[:10])]
+    
+    # fetch and display albums
+    albums = sp.artist_albums(artist_id, album_type='album', limit=10)
+    album_images = []
+
+    if albums:
+        for album in albums['items']:
+            album_name = album['name']
+            images = album['images']  # List of image URLs with different sizes
+            image_url = images[0]['url'] if images else "No image available"  # Pick the first (largest) image
+            album_images.append((album_name, image_url))
+            output.append(f"Album: {album_name}, Image: {image_url}")
+    
+    self.results_text.setHtml("<br>".join(output))
     
 
 def genre_results(self, genre):
     # fetch top 5 artists for specific genre and get their top 10 songs
     # step 1: search for artists in the given genre
-    results = sp.search(q=f"genre:{genre}", type="artist", limit=5)                     # only pull the first 5 artists
+    results = sp.search(q=f"genre:{genre}", type="artist", limit=5)                                         # only pull the first 5 artists
     artists = results.get("artists", {}).get("items", [])
 
     # had some help from forums / youtube on efficient ways to pull from API
 
     # error handling
-    if not artists:                                                                     # if not a valid artist
+    if not artists:                                                                                         # if not a valid artist
         self.results_text.set_text(f"No artists found for genre: {genre}.")         
         return
 
     # get the top 10 songs for each artist
-    output = []                                                                         # the final output to be displayed
+    output = []  # The final output to be displayed
     for artist in artists:
-        artist_name = artist["name"]                                                    # pull and separate artist name into own variable
-        artist_id = artist["id"]                                                        # pull artist id and put into own variable
-        output.append(f"Artist: {artist_name}")                                         # i.e: "Arist: Kendrick Lamar"
+        artist_name = artist["name"]  
+        artist_id = artist["id"]      
+        artist_images = artist.get("images", [])
 
-    # fetch top 10 songs
-        top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])    # list of top songs from artist
-        for track in top_tracks[:10]:                                                   # pull 10 only
-            output.append(f"  - {track['name']}")                                       # more format to output
+        # artist name 
+        output.append(f"<div style='text-align: center; font-weight: bold; font-size: 25px;'>"
+                      f"Artist: {artist_name}</div>")                                                       # i.e. "Kendrick Lamar"
 
-        output.append("")                                                               # newline between artists
+        # top 10 songs
+        top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])  
+        for i, track in enumerate(top_tracks[:10]):                                                         # top 10 only
+            # Add each track centered
+            output.append(f"<div style='text-align: center; font-size: 16px;'>"
+                          f"{i + 1}. {track['name']}</div>")
 
-    # step 3: display result
-    self.results_text.set_text("\n".join(output))                                       # concatenate the whole string output
-    
+        output.append("<br>")                                                                               # newline between each artists                               
+    # display results using html
+    self.results_text.setHtml("".join(output))
 
 ''' old code for manually loading in API token before i found terminal install for spotify API'''
 # # --------------------- load in environment variables ---------------------

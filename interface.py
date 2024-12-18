@@ -19,7 +19,7 @@ import api
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from io import BytesIO
-from api import sp  # Import Spotify API instance
+from api import sp
 
 # --------------------- GUI INTERFACE ---------------------
 
@@ -76,16 +76,19 @@ class GenreResultsWindow(QWidget):
         super().__init__()
         self.resize(600, 400)                                                   # window header
         layout = QVBoxLayout()                                                  # init layout
-        
+        genre = genre.title()
+
         # HEADER / WINDOW TITLE
         genre_results_label = QLabel(f"Top Artists and Songs for the {genre} Genre")
+        genre_results_label.alignment = Qt.AlignCenter
+        genre_results_label.set_style_sheet("font-size: 40px; font-weight: bold;")
         layout.add_widget(genre_results_label)                                  #add widget to layout
 
         # area to display results
         self.results_text = QTextEdit()
         self.results_text.read_only = True                                      # set it so that text cannot be edited after being displayed
         layout.add_widget(self.results_text)                                    # add results widget to the layout
-
+        self.results_text.alignment = Qt.AlignCenter
         # get results
         api.genre_results(self, genre)
         self.set_layout(layout)
