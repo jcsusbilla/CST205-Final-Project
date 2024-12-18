@@ -21,6 +21,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from io import BytesIO
 from api import sp  # Import Spotify API instance
 
+
 # --------------------- GUI INTERFACE ---------------------
 
 # set up spotify API credentials and authentication
@@ -157,7 +158,29 @@ class MyWindow(QWidget):
         # bottom-left box -- playlist
         bottom_left_hbox = QVBoxLayout()                                        # create left vertical box
         group_box_3 = QGroupBox("Most Recent Playlist")                         # create group box 3
-        bottom_left_hbox.add_widget(group_box_3)                                # add group box 3 to the left vertical box
+        group_box_3_layout = QVBoxLayout()
+
+        # Create a label to show recent playlist info
+        self.recent_playlist_label = QLabel("No recent playlists yet.")  # Default label text
+        group_box_3_layout.add_widget(self.recent_playlist_label)
+
+        # Create buttons under the playlist box
+        button_1 = QPushButton("Create Playlist")
+        button_1.clicked.connect(self.create_playlist)
+        button_2 = QPushButton("View Playlists")
+
+        # Add buttons to the group box layout
+        group_box_3_layout.add_widget(button_1)
+        group_box_3_layout.add_widget(button_2)
+
+        # Set the layout of group_box_3 to the group_box_3_layout
+        group_box_3.set_layout(group_box_3_layout)
+
+        # Add group_box_3 to the bottom_left_hbox layout
+        bottom_left_hbox.add_widget(group_box_3)
+
+        
+        
 
         # buttons under the playlist box
         button_1 = QPushButton("Create Playlist")
@@ -287,6 +310,30 @@ class MyWindow(QWidget):
 
         # Show results window
         self.results_window.show()
+    @Slot()
+    def update_recent_playlist(self):
+        # Fetch the recent playlist from API
+        recent_playlist = api.get_recent_playlist()
+        # Update the label with the result
+        self.recent_playlist_label.setText(recent_playlist)
+        
+    # button_2.clicked.connect(update_recent_playlist)
+    
+    @Slot()
+    def create_playlist(self):
+        genre = self.genre_le.text()  # 장르 입력란에서 장르 가져오기
+        # 또는 사용자가 선택한 다른 정보를 통해 플레이리스트 생성
+        if not genre:  # 장르가 비어있다면
+            self.recent_playlist_label.setText("Please enter a genre.")
+            return
+        try:
+            # api.create_playlist()를 호출하여 실제로 플레이리스트를 생성 (가상 함수)
+            playlist = api.create_playlist(genre)  # API를 통해 플레이리스트 생성
+            self.recent_playlist_label.setText(f"Playlist for '{genre}' created successfully!")
+        except Exception as e:
+            self.recent_playlist_label.setText(f"Error: {str(e)}")
+
+
 
 
 # --------------------- FUNCTION CALLS ---------------------

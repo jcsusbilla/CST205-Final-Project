@@ -21,6 +21,21 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
+def get_recent_playlist():
+    try:
+        # Get the current user's playlists
+        playlists = sp.current_user_playlists()
+        
+        if playlists['items']:
+            # If playlists are found, get the first playlist (most recent)
+            recent_playlist = playlists['items'][0]
+            playlist_name = recent_playlist['name']
+            playlist_url = recent_playlist['external_urls']['spotify']
+            return f"Most Recent Playlist: {playlist_name}\nURL: {playlist_url}"
+        else:
+            return "No recent playlists found."
+    except Exception as e:
+        return f"Error fetching playlists: {str(e)}"
 # def artist_results(self, artist):
 #     # search for the artist
 #     results = sp.search(q=f"artist:{artist}", type="artist", limit=1)
