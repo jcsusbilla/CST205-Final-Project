@@ -110,31 +110,40 @@ class MyWindow(QWidget):
         group_box_2_layout = QVBoxLayout()                                      # create layout for group box 2
 
         # Add 9 buttons to the layout manually
-        workout_button = QPushButton("Workout")                                 # create workout button
+        workout_button = QPushButton("Workout") # create workout button
+        workout_button.clicked.connect(lambda: self.call_api_playlist("Workout")) 
         group_box_2_layout.add_widget(workout_button)                           # add workout button to layout
 
         house_cleaning_button = QPushButton("House Cleaning")                   # create house cleaning button
+        house_cleaning_button.clicked.connect(lambda: self.call_api_playlist("House Cleaning"))  
         group_box_2_layout.add_widget(house_cleaning_button)                    # add house cleaning button to layout
 
         meditation_button = QPushButton("Meditation")                           # create meditation button
+        meditation_button.clicked.connect(lambda: self.call_api_playlist("Meditation"))
         group_box_2_layout.add_widget(meditation_button)                        # add meditation button to layout
 
         studying_button = QPushButton("Studying")                               # create studying button
+        studying_button.clicked.connect(lambda: self.call_api_playlist("Studying"))
         group_box_2_layout.add_widget(studying_button)                          # add Studying button to layout
 
         cooking_button = QPushButton("Cooking")                                 # create cooking button
+        cooking_button.clicked.connect(lambda: self.call_api_playlist("Cooking"))
         group_box_2_layout.add_widget(cooking_button)                           # add Cooking button to layout
 
         party_button = QPushButton("Party")                                     # create party button
+        party_button.clicked.connect(lambda: self.call_api_playlist("Party"))
         group_box_2_layout.add_widget(party_button)                             # add party button to layout
 
         road_trip_button = QPushButton("Road Trip")                             # create road trip button
+        road_trip_button.clicked.connect(lambda: self.call_api_playlist("Road Trip"))
         group_box_2_layout.add_widget(road_trip_button)                         # add road trip button to layout
 
         gaming_button = QPushButton("Gaming")                                   # create gaming button
+        gaming_button.clicked.connect(lambda: self.call_api_playlist("Gaming"))
         group_box_2_layout.add_widget(gaming_button)                            # add gaming button to layout
 
         kids_button = QPushButton("Kids")                                       # create kids button
+        kids_button.clicked.connect(lambda: self.call_api_playlist("Kidss"))
         group_box_2_layout.add_widget(kids_button)                              # add kids button to layout
 
         group_box_2.set_layout(group_box_2_layout)                              # assign layout to group box 2
@@ -248,6 +257,37 @@ class MyWindow(QWidget):
         # Open a new window to display artist results
         self.artist_results_window = ArtistResultsWindow(artist)
         self.artist_results_window.show()
+    
+    @Slot()
+    def call_api_playlist(self, activity):
+        """Fetch and display a playlist for the selected activity."""
+        # Create a new results window
+        self.results_window = QWidget()
+        self.results_window.resize(600, 400)
+        self.results_window.setWindowTitle(f"{activity} Playlist")
+
+        # Layout setup
+        layout = QVBoxLayout()
+        self.results_text = QTextEdit()  # Add a text area for results
+        self.results_text.setReadOnly(True)
+        layout.addWidget(self.results_text)
+        self.results_window.setLayout(layout)
+        
+        try:
+            playlist_data = api.activity_playlist(activity)  # Call API function
+            if playlist_data:  # Check if we received valid data
+              self.results_text.setText("\n".join(playlist_data))  # Display playlist data
+            else:
+              self.results_text.setText(f"No results found for {activity}.")
+        except Exception as e:
+          self.results_text.setText(f"Error: {str(e)}")
+      
+        # Call API function
+        api.activity_playlist(self, activity)
+
+        # Show results window
+        self.results_window.show()
+
 
 # --------------------- FUNCTION CALLS ---------------------
 app = QApplication([])
