@@ -22,7 +22,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 ))
 
 def artist_results(self, artist):
-    # search for the artist
+    # search for artist
     results = sp.search(q=f"artist:{artist}", type="artist", limit=1)
     artist_items = results.get("artists", {}).get("items", [])
 
@@ -36,40 +36,54 @@ def artist_results(self, artist):
     artist_id = artist_data["id"]
     artist_images = artist_data.get("images", [])
 
-    # display artist image
+    # artist image
     if artist_images:
-        image_url = artist_images[0]["url"] 
+        image_url = artist_images[0]["url"]
         response = requests.get(image_url)
         image = QPixmap()
         image.loadFromData(BytesIO(response.content).read())
-        self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio))
+        self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation))
     else:
         self.image_label.setText("No image available.")
 
-    # get the artist's top 10 songs
+    # artist's top 10 songs
     top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
+    output = [f"<div style='text-align: center; font-size: 45px; font-weight: bold;'>Top 10 Songs</div>"]
     if not top_tracks:
-        self.results_text.setText("No tracks available for this artist.")
-        return
+        output.append("<div style='text-align: center;'>No tracks available for this artist.</div>")
+    else:
+        for i, track in enumerate(top_tracks[:10]):
+            output.append(f"<div style='text-align: center; font-size: 18px;'>{i + 1}. {track['name']}</div><br>")
 
-    # display the songs and align them to the center 
-    output = [f"<div style='text-align: center;'>{i+1}. {track['name']}</div>"
-              for i, track in enumerate(top_tracks[:10])]
-    
-    # fetch and display albums
-    albums = sp.artist_albums(artist_id, album_type='album', limit=10)
-    album_images = []
+    # display albums
+    albums = sp.artist_albums(artist_id, album_type='album', limit=10).get('items', [])
+    output.append("<br>")  # Add spacing before albums section
+    output.append(f"<div style='text-align: center; font-size:45px; font-weight: bold;'>Albums</div>")
 
-    if albums:
-        for album in albums['items']:
-            album_name = album['name']
-            images = album['images']  # List of image URLs with different sizes
-            image_url = images[0]['url'] if images else "No image available"  # Pick the first (largest) image
-            album_images.append((album_name, image_url))
-            output.append(f"Album: {album_name}, Image: {image_url}")
-    
-    self.results_text.setHtml("<br>".join(output))
-    
+    if not albums:
+        output.append("<div style='text-align: center;'>No albums available for this artist.</div>")
+    else:
+        for album in albums:
+            album_name = album["name"]
+            release_date = album.get("release_date", "Unknown Date")
+            album_images = album.get("images", [])
+
+            # add album image if available
+            # if album_images:
+            #     album_image_url = album_images[0]["url"]
+            #     album_image_html = f"<img src='{album_image_url}' style='width:150px; height:150px; margin:10px;'>"
+            # else:
+            #     album_image_html = "<div>No image available</div>"
+
+            # Combine album details
+            output.append(f"<div style='text-align: center; margin-bottom: 40px;'>"
+                          #f"{album_image_html}<br>"
+                          f"<span style='font-size: 18px; font-weight: bold;'>{album_name}</span><br>"
+                          f"Release Date: {release_date}</div>")
+    output.append("<br>")
+
+    # Display final result
+    self.results_text.setHtml("".join(output))
 
 def genre_results(self, genre):
     # fetch top 5 artists for specific genre and get their top 10 songs

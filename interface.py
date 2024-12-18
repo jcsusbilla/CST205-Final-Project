@@ -32,9 +32,9 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 ))
 
 # ------------------ NEW WINDOWS SECTION ------------------
-# WINDOW TO DISPLAY SPECIFIED ARTIST AND THEIR TOP 25 SONGS. ALSO SHOW AN IMAGE
+# WINDOW TO DISPLAY SPECIFIED ARTIST AND THEIR TOP 10 SONGS. ALSO SHOW AN IMAGE AND ALBUMS
 class ArtistResultsWindow(QWidget):
-    """A separate window to display an artist's image and top 25 songs."""
+    """a new window to display an artist's image and top 10 songs."""
     def __init__(self, artist):
         super().__init__()
         self.resize(600, 800)
@@ -52,11 +52,11 @@ class ArtistResultsWindow(QWidget):
         self.image_label.alignment = Qt.AlignCenter
         layout.add_widget(self.image_label)
 
-        # header Label
-        artist_results_label = QLabel(f"Top 25 Songs from {artist}")
-        artist_results_label.alignment = Qt.AlignCenter
-        artist_results_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(artist_results_label)
+        # # header Label
+        # artist_results_label = QLabel(f"Top 10 Songs from {artist}")
+        # artist_results_label.alignment = Qt.AlignCenter
+        # artist_results_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        # layout.add_widget(artist_results_label)
 
         # text display for top songs
         self.results_text = QTextEdit()
@@ -68,8 +68,6 @@ class ArtistResultsWindow(QWidget):
         # display artist info
         api.artist_results(self, artist)
         
-
-
 # WINDOW TO DISPLAY GENRE'S TOP 5 ARTISTS AND EACH ARTIST TOP 10 SONGS
 class GenreResultsWindow(QWidget):  
     def __init__(self, genre):
@@ -92,7 +90,6 @@ class GenreResultsWindow(QWidget):
         # get results
         api.genre_results(self, genre)
         self.set_layout(layout)
-
 
 # ------------------ MAIN ------------------
 class MyWindow(QWidget):
