@@ -21,6 +21,48 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
+def get_user_location():
+    try:
+        response = requests.get("https://ipinfo.io")
+        data = response.json()
+        return data.get("country", "US")                                                            # default to US
+    except:
+        return "US"
+    
+def fetch_new_release(country_code):
+    results = sp.new_releases(country=country_code, limit=20)                                       # set 20 max
+    albums = results.get("albums", {}).get("items", [])
+    if not albums:
+        return None
+
+    return random.choice(albums)                                                                    # randomly select 1 album to display
+
+def display_new_release(self):
+    country_code = get_user_location()                                                              # retrieve user location
+    new_release = fetch_new_release(country_code)                                                   # retrieve new releases by location
+
+    # retrieve album details
+    album_name = new_release["name"]
+    artist_name = ", ".join(artist["name"] for artist in new_release["artists"])
+    release_date = new_release["release_date"]
+    image_url = new_release["images"][0]["url"] if new_release["images"] else None
+
+    # display album cover
+    if image_url:
+        response = requests.get(image_url)                                                          # get image
+        pixmap = QPixmap()                                                                          # creat pixmap
+        pixmap.loadFromData(response.content)
+        self.new_release_image.setPixmap(pixmap.scaled(350, 350, Qt.KeepAspectRatio))               # set image size
+
+    # display album details
+    self.new_release_details.setText(
+        f"<div style='text-align: center; font-size: 16px;'>"                                       # set text style
+        f"<span style='font-size: 40px; font-weight: bold;'>{album_name}</span><br>"                # set text style
+        f"<span style='font-size: 28px;'>Artist: {artist_name}</span><br>"                          # set text style
+        f"<span style='font-size: 20px;'>Release Date: {release_date}</span>"                       # set text style
+        f"</div>"
+    )
+
 # --------------------- DAILY RECOMMENDATIONS SECTION ---------------------
 def fetch_workout_songs(self):
     # we chose predefined genres and moods for a workout playlist
@@ -29,7 +71,7 @@ def fetch_workout_songs(self):
 
     # set number of songs to fetch per genre/mood
     # set to 100 total chosen songs so that we can randomize and select 50
-    songs_per_category = 10
+    songs_per_category = 10                                                                         # max 10 songs
     total_songs = []
 
     # get songs from genres
@@ -305,7 +347,7 @@ def artist_results(self, artist):
         response = requests.get(image_url)
         image = QPixmap()
         image.loadFromData(BytesIO(response.content).read())
-        self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.image_label.setPixmap(image.scaled(300, 300, Qt.KeepAspectRatio))
 
     # artist's top 10 songs
     top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
@@ -326,12 +368,12 @@ def artist_results(self, artist):
                         f"Release Date: {release_date}</div>")
     output.append("<br>")
 
-    # Display final result
+    # display results
     self.results_text.setHtml("".join(output))
 
 def genre_results(self, genre):
     # fetch top 5 artists for specific genre and get their top 10 songs
-    # step 1: search for artists in the given genre
+    # search for artists in the given genre
     results = sp.search(q=f"genre:{genre}", type="artist", limit=5)                                         # only pull the first 5 artists
     artists = results.get("artists", {}).get("items", [])
 
