@@ -169,7 +169,7 @@ class MyWindow(QWidget):
         # dropdown menu for mood
         mood_label = QLabel("Select a Mood:")
         self.mood_dropdown = QComboBox()
-        self.mood_dropdown.add_items(["","Happy", "Sad", "Energetic", "Chill", "Romantic", "Focus", "Sleep"])
+        self.mood_dropdown.add_items(["","Happy", "Sad", "Energetic", "Calm", "Focus", "Sleep"])
         mood_submit_btn = QPushButton("Submit Mood")
         mood_submit_btn.clicked.connect(self.submit_mood)
         group_box_4_layout.add_widget(mood_label)
@@ -189,7 +189,7 @@ class MyWindow(QWidget):
         # dropdown menu for regions
         region_label = QLabel("Select a Region:")
         self.region_dropdown = QComboBox()
-        self.region_dropdown.add_items(["", "United States", "United Kingdom", "Canada", "Germany", "France", "Italy", "Spain", "Japan", "Australia", "Brazil", "Mexico", "India"])
+        self.region_dropdown.add_items(["", "USA", "Latin America", "Europe", "Asia", "Africa"])
         region_submit_btn = QPushButton("Submit Region")
         region_submit_btn.clicked.connect(self.submit_region)
         group_box_4_layout.add_widget(region_label)
@@ -199,7 +199,7 @@ class MyWindow(QWidget):
         # dropdown menu for weather
         weather_label = QLabel("Select Weather Condition:")
         self.weather_dropdown = QComboBox()
-        self.weather_dropdown.add_items(["", "Sunny", "Rainy", "Cloudy", "Snowy", "Windy", "Foggy", "Stormy", "Clear Night"])
+        self.weather_dropdown.add_items(["", "Sunny", "Rainy", "Cloudy", "Snowy", "Stormy", "Clear Night"])
         weather_submit_btn = QPushButton("Submit Weather")
         weather_submit_btn.clicked.connect(self.submit_weather)
         group_box_4_layout.add_widget(weather_label)

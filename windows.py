@@ -21,6 +21,13 @@ from spotipy.oauth2 import SpotifyOAuth
 from io import BytesIO
 from api import sp
 
+# -------------------------------- DAILY RECOMMENDATION WINDOWS --------------------------------
+
+
+
+
+
+# -------------------------------- GENERAL RECOMMENDATIONS WINDOWS --------------------------------
 # WINDOW TO DISPLAY 50 SONGS BASED ON WEATHER
 class WeatherResultsWindow(QWidget):
     def __init__(self, weather):

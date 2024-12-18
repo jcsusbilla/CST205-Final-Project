@@ -24,7 +24,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 # --------------------- DAILY RECOMMENDATIONS SECTION ---------------------
 def fetch_workout_songs(self):
     # we chose predefined genres and moods for a workout playlist
-    workout_genres = ["hip-hop", "electronic", "pop", "r&b", "rock"]
+    workout_genres = ["hip-hop", "work-out", "pop", "r&b", "rock"]
     workout_moods = ["energetic", "motivational", "upbeat", "power"]
 
     # set number of songs to fetch per genre/mood
@@ -96,108 +96,190 @@ def fetch_house_cleaning_songs(self):
 
 # --------------------- GENERAL RECOMMENDATIONS SECTION ---------------------
 def weather_results(self, weather):
-    weather_mapping = {
-        "Sunny": "sunny",
-        "Rainy": "rainy",
-        "Cloudy": "cloudy",
-        "Snowy": "snowy",
-        "Windy": "windy",
-        "Foggy": "foggy",
-        "Stormy": "stormy",
-        "Clear Night": "clear night"
+    # selected predefined genre's and moods and link them to regions
+    weather_genre_mapping = {
+        "Sunny": ["pop", "dance", "electronic", "summer"],
+        "Rainy": ["blues", "rainy-day", "acoustic", "indie"],
+        "Cloudy": ["ambient", "chill", "lo-fi", "instrumental"],
+        "Stormy": ["rock", "metal", "grunge", "electronic"],
+        "Snowy": ["classical", "instrumental", "folk", "acoustic"],
+        "Clear Night": ["blues", "indie", "soothing", "jazz"]
+    }
+    weather_mood_mapping = {
+        "Sunny": ["uplifting", "happy", "energetic"],
+        "Rainy": ["melancholic", "soothing", "reflective"],
+        "Cloudy": ["calm", "relaxed"],
+        "Stormy": ["intense", "powerful"],
+        "Snowy": ["peaceful", "nostalgic"],
+        "Clear Night": ["calm", "relaxed", "soothing"]
     }
 
-    weather_query = weather_mapping.get(weather, weather.lower())
+    # Retrieve genres and moods for the selected weather condition
+    genres = weather_genre_mapping.get(weather, [])
+    moods = weather_mood_mapping.get(weather, [])
 
-    #  get songs for the selected weather
-    results = sp.search(q=f"{weather_query}", type="track", limit=50)
-    tracks = results.get("tracks", {}).get("items", [])
-    random.shuffle(tracks)                                                                  # randomize so it's different every time
+    # get songs for genres and moods
+    songs_per_category = 10  # Number of songs to fetch per genre/mood
+    total_songs = []
+
+    # get songs for each genre
+    for genre in genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # get songs for each mood
+    for mood in moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # shuffle
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
 
     # format the results
-    output = [f"<div style='text-align: center; font-size: 18px;'>"
-              f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
-              for i, track in enumerate(tracks)]
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
 
-    # display results
+    # display the results
     self.results_text.setHtml("<br>".join(output))
 
 def region_results(self, region):
-    # map region to spotify market codes
-    region_mapping = {
-        "United States": "US",
-        "United Kingdom": "GB",
-        "Canada": "CA",
-        "Germany": "DE",
-        "France": "FR",
-        "Italy": "IT",
-        "Spain": "ES",
-        "Japan": "JP",
-        "Australia": "AU",
-        "Brazil": "BR",
-        "Mexico": "MX",
-        "India": "IN"
+    # selected predefined genre's and moods and link them to regions
+    region_genre_mapping = {
+        "USA": ["pop", "hip-hop", "country", "rock"],
+        "Latin America": ["reggaeton", "salsa", "bachata", "cumbia"],
+        "Europe": ["electronic", "classical", "indie", "pop"],
+        "Asia": ["k-pop", "bollywood", "j-pop", "traditional", "malay", "philippines-opm"],
+        "Africa": ["afrobeats", "highlife", "gqom", "soukous"]
     }
+    region_mood_mapping = {
+        "USA": ["energetic", "upbeat"],
+        "Latin America": ["cheerful", "party"],
+        "Europe": ["relaxed", "inspirational"],
+        "Asia": ["vibrant", "soothing"],
+        "Africa": ["dynamic", "uplifting"]
+    }
+    # get genres and moods for the selected region
+    genres = region_genre_mapping.get(region, [])
+    moods = region_mood_mapping.get(region, [])
 
-    market_code = region_mapping.get(region, "US")                                          # default to US if region not found
+    # get songs for genres and moods
+    songs_per_category = 10 
+    total_songs = []
 
-    # get songs for the selected region
-    results = sp.search(q="top hits", type="track", limit=50, market=market_code)
-    tracks = results.get("tracks", {}).get("items", [])
-    random.shuffle(tracks)                                                                  # randomize so it's different every time
+    # get songs for each genre
+    for genre in genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
 
-    # format the results
-    output = [f"<div style='text-align: center; font-size: 18px;'>"
-              f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
-              for i, track in enumerate(tracks)]
+    # get songs for each mood
+    for mood in moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # shuffle
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+    # format results output
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
 
     # display results
     self.results_text.setHtml("<br>".join(output))
 
 def season_results(self, season):
-    # Map season to search queries
-    season_mapping = {
-        "Spring": "spring",
-        "Summer": "summer",
-        "Autumn": "autumn",
-        "Winter": "winter"
+    # select predefined genre's and link them to specific moods
+    season_genre_mapping = {
+        "Spring": ["acoustic", "folk", "indie", "pop"],
+        "Summer": ["reggaeton", "summer", "hip-hop", "electronic"],
+        "Autumn": ["rock", "soul", "jazz", "classical"],
+        "Winter": ["ambient", "classical", "blues", "instrumental"]
     }
-    season_query = season_mapping.get(season, season.lower())
-    results = sp.search(q=f"{season_query}", type="track", limit=50)
-    tracks = results.get("tracks", {}).get("items", [])
-    random.shuffle(tracks)                                                                  # randomize so it's different every time
 
-    # format the results
-    output = [f"<div style='text-align: center; font-size: 18px;'>"
-              f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
-              for i, track in enumerate(tracks)]
+    season_mood_mapping = {
+        "Spring": ["uplifting", "happy"],
+        "Summer": ["energetic", "party"],
+        "Autumn": ["reflective", "calm"],
+        "Winter": ["soothing", "melancholic"]
+    }
+
+    # retrieve genres and moods for the selected season
+    genres = season_genre_mapping.get(season, [])
+    moods = season_mood_mapping.get(season, [])
+
+    # get songs for genres and moods
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs for each genre
+    for genre in genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # get songs for each mood
+    for mood in moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # shuffle
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+    # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
 
     # display results
     self.results_text.setHtml("<br>".join(output))
 
 def mood_results(self, mood):
-    # map mood to playlist categories or keywords
-    mood_mapping = {
-        "Happy": "happy",
-        "Sad": "sad",
-        "Energetic": "workout",
-        "Chill": "chill",
-        "Romantic": "romantic",
-        "Focus": "focus",
-        "Sleep": "sleep",
+    # select predefined genre's and link them to specific moods
+    mood_genre_mapping = {
+        "Energetic": ["pop", "electronic", "dance"],
+        "Calm": ["ambient", "classical", "acoustic"],
+        "Happy": ["pop", "funk", "soul"],
+        "Sad": ["indie", "folk", "blues"],
+        "Motivational": ["rock", "hip-hop", "electronic"],
+        "Sleep": ["soul", "blues", "indie"]
     }
-    mood_query = mood_mapping.get(mood, mood.lower())
 
-    # find the songs based on mood
-    results = sp.search(q=f"{mood_query}", type="track", limit=50)
-    tracks = results.get("tracks", {}).get("items", [])
-    random.shuffle(tracks)                                                                  # randomize so it's different every time
+    # retrieve genres for the selected mood
+    genres = mood_genre_mapping.get(mood, [])
 
-    # format output
+    # fetch songs for each genre
+    songs_per_genre = 10
+    total_songs = []
+
+    for genre in genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_genre)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # shuffle the songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+    # format results
     output = [
         f"<div style='text-align: center; font-size: 18px;'>"
         f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
-        for i, track in enumerate(tracks)
+        for i, track in enumerate(selected_songs)
     ]
 
     # display results
