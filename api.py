@@ -21,6 +21,45 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
+def artist_of_the_day(self):
+    # Randomly select an artist
+    results = sp.search(q="year:2023", type="artist", limit=20)
+    artists = results.get("artists", {}).get("items", [])
+    if not artists:
+        self.artist_name_label.setText("No artist found.")
+        self.artist_image.clear()
+        self.top_songs_label.setText("")
+        return
+
+    artist = random.choice(artists)
+    artist_name = artist["name"]
+    artist_id = artist["id"]
+    artist_images = artist.get("images", [])
+    
+    # Display Artist Name
+    self.artist_name_label.setText(artist_name)
+
+    # Display Artist Image
+    if artist_images:
+        image_url = artist_images[0]["url"]
+        response = requests.get(image_url)
+        pixmap = QPixmap()
+        pixmap.loadFromData(response.content)
+        self.artist_image.setPixmap(pixmap.scaled(200, 200, Qt.KeepAspectRatio))
+    else:
+        self.artist_image.setText("No image available.")
+
+    # Fetch and Display Top 5 Songs
+    top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
+    if top_tracks:
+        songs = [f"{i + 1}. {track['name']}" for i, track in enumerate(top_tracks[:5])]
+        self.top_songs_label.setText(
+            "<br>".join(f"<div style='text-align: center;'>{song}</div>" for song in songs)
+        )
+    else:
+        self.top_songs_label.setText("No top songs available.")
+
+# --------------------- NEW RELEASE RECOMMENDATION BY REGION ---------------------
 def get_user_location():
     try:
         response = requests.get("https://ipinfo.io")

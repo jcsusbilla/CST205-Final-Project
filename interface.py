@@ -12,11 +12,7 @@ from PySide6.QtWidgets import QApplication, QWidget, QLabel, QHBoxLayout, QCombo
 from __feature__ import snake_case, true_property
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
-from PIL import Image
-from PIL.ImageQt import ImageQt
 import api
-import random
-import requests
 import windows
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -83,13 +79,38 @@ class MyWindow(QWidget):
         super().__init__()
         
         top_hbox = QHBoxLayout()                                                # create horizontal box layout for the top
-        # -------------------- ARTIST OF THE DAY SECTION (Juan) --------------------    
-        # top horizontal box -- group box 1 and group box 2)                    
-        group_box_1 = QGroupBox("Artist of the Day")                            # create group box 1
 
+        # -------------------- ARTIST OF THE DAY SECTION (Juan) --------------------                
+        group_box_1 = QGroupBox("Artist of the Day")                            # Create group box 1
+        group_box_1_layout = QVBoxLayout()                                      # Create layout for Artist of the Day
 
+        self.artist_header = QLabel("ARTIST OF THE DAY")
+        self.artist_header.alignment = Qt.AlignCenter                     # align everything to the center
+        self.artist_header.set_style_sheet("font-size: 40px; font-weight: bold;")            
+        group_box_1_layout.add_widget(self.artist_header)                 # add widget to layout
 
+        # Artist Image
+        self.artist_image = QLabel()
+        self.artist_image.alignment = Qt.AlignCenter
+        group_box_1_layout.add_widget(self.artist_image)
 
+        # Artist Name
+        self.artist_name_label = QLabel()
+        self.artist_name_label.alignment = Qt.AlignCenter
+        self.artist_name_label.set_style_sheet("font-size: 20px; font-weight: bold;")
+        group_box_1_layout.add_widget(self.artist_name_label)
+
+        # Top 5 Songs
+        self.top_songs_label = QLabel()
+        self.top_songs_label.alignment = Qt.AlignCenter
+        self.top_songs_label.set_style_sheet("font-size: 20px;")
+        group_box_1_layout.add_widget(self.top_songs_label)
+
+        group_box_1.set_layout(group_box_1_layout)                              # Assign layout to the group box
+        top_hbox.add_widget(group_box_1, stretch=1)                             # Add group box 1 to the horizontal layout
+
+        # Display the artist of the day during initialization
+        api.artist_of_the_day(self)
 
         # -------------------- DAILY RECOMMENDATION SECTION (Minsol / Sunwoo) --------------------
         group_box_2 = QGroupBox("Daily Recommendations")                        # create group box 2
@@ -127,7 +148,6 @@ class MyWindow(QWidget):
         group_box_2.set_layout(group_box_2_layout)                              # assign layout to group box 2
 
         # add boxes to top row of boxes
-        top_hbox.add_widget(group_box_1, stretch=1)                             # add group box 1 to the horizontal layout
         top_hbox.add_widget(group_box_2, stretch=1)                             # add group box 2 to the horizontal layout
 
 
@@ -139,6 +159,11 @@ class MyWindow(QWidget):
 
         # New Releases Section inside Group Box
         new_release_layout = QVBoxLayout()                                      # layout for the new release content
+
+        self.release_header = QLabel("POPULAR NEW RELEASE")
+        self.release_header.alignment = Qt.AlignCenter                     # align everything to the center
+        self.release_header.set_style_sheet("font-size: 40px; font-weight: bold;")            
+        new_release_layout.add_widget(self.release_header)                 # add widget to layout
 
         # album cover
         self.new_release_image = QLabel()
