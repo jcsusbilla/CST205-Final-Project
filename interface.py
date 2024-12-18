@@ -16,6 +16,7 @@ from PIL import Image
 from PIL.ImageQt import ImageQt
 import os
 import api
+import windows
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from io import BytesIO
@@ -31,64 +32,18 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
-# ------------------ NEW WINDOWS SECTION ------------------
-
-# WINDOW TO DISPLAY 50 SONGS BASED ON WEATHER
-class WeatherResultsWindow(QWidget):
-    def __init__(self, weather):
+# ------------------ NEW WINDOWS SECTION (MINSOL/SUNWOO)------------------
+class HouseCleaningResultsWindow(QWidget):
+    def __init__(self):
         super().__init__()
         self.resize(800, 1000)
-
-        # layout
-        layout = QVBoxLayout()
-        weather_title_label = QLabel(f"50 Songs for {weather} Weather")
-        weather_title_label.alignment = Qt.AlignCenter
-        weather_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(weather_title_label)
-
-        # text area for song list
-        self.results_text = QTextEdit()
-        self.results_text.read_only = True
-        layout.add_widget(self.results_text)
-
-        # display results
-        api.weather_results(self, weather)
-        self.set_layout(layout)
-
-# WINDOW TO DISPLAY 50 SONGS BASED ON REGION
-class RegionResultsWindow(QWidget):
-    def __init__(self, region):
-        super().__init__()
-        self.resize(800, 1000)
-
-        # layout
-        layout = QVBoxLayout()
-        region_title_label = QLabel(f"50 Songs for {region}")
-        region_title_label.alignment = Qt.AlignCenter
-        region_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(region_title_label)
-
-        # text area for song list
-        self.results_text = QTextEdit()
-        self.results_text.read_only = True
-        layout.add_widget(self.results_text)
-
-        # display results
-        api.region_results(self, region)
-        self.set_layout(layout)
-
-# WINDOW TO DISPLAY 50 SONGS BASED ON SEASON
-class SeasonResultsWindow(QWidget):
-    def __init__(self, season):
-        super().__init__()
-        self.resize(600, 800)
 
         # Main layout
         layout = QVBoxLayout()
-        season_title_label = QLabel(f"50 Songs for {season}")
-        season_title_label.alignment = Qt.AlignCenter
-        season_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(season_title_label)
+        cleaning_title_label = QLabel("Top 50 Random House Cleaning Songs")
+        cleaning_title_label.alignment = Qt.AlignCenter
+        cleaning_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(cleaning_title_label)
 
         # Text area for song list
         self.results_text = QTextEdit()
@@ -96,21 +51,20 @@ class SeasonResultsWindow(QWidget):
         layout.add_widget(self.results_text)
 
         # Fetch and display results
-        api.season_results(self, season)
+        api.fetch_house_cleaning_songs(self)
         self.set_layout(layout)
 
-# WINDOW TO DISPLAY 50 SONGS BASED ON MOOD
-class MoodResultsWindow(QWidget):
-    def __init__(self, mood):
+class WorkoutResultsWindow(QWidget):
+    def __init__(self):
         super().__init__()
         self.resize(800, 1000)
 
         # layout
         layout = QVBoxLayout()
-        mood_title_label = QLabel(f"50 Songs for {mood} Mood")
-        mood_title_label.alignment = Qt.AlignCenter
-        mood_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(mood_title_label)
+        workout_title_label = QLabel("Top 50 Random Workout Songs")
+        workout_title_label.alignment = Qt.AlignCenter
+        workout_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(workout_title_label)
 
         # text area for song list
         self.results_text = QTextEdit()
@@ -118,59 +72,7 @@ class MoodResultsWindow(QWidget):
         layout.add_widget(self.results_text)
 
         # display results
-        api.mood_results(self, mood)
-        self.set_layout(layout)
-
-# WINDOW TO DISPLAY SPECIFIED ARTIST AND THEIR TOP 10 SONGS. ALSO SHOW AN IMAGE AND ALBUMS
-class ArtistResultsWindow(QWidget):
-    def __init__(self, artist):
-        super().__init__()
-        self.resize(800, 1000)
-
-        # main layout
-        layout = QVBoxLayout()
-        artist = artist.title()
-        artist_name_label = QLabel(f"{artist}")
-        artist_name_label.alignment = Qt.AlignCenter
-        artist_name_label.set_style_sheet("font-size: 75px; font-weight: bold;")
-        layout.add_widget(artist_name_label)
-        
-        # artist image placeholder
-        self.image_label = QLabel()  # initialize the image label here
-        self.image_label.alignment = Qt.AlignCenter
-        layout.add_widget(self.image_label)
-
-        self.results_text = QTextEdit()
-        self.results_text.read_only = True
-        layout.add_widget(self.results_text)
-
-        self.set_layout(layout)
-
-        # display artist info
-        api.artist_results(self, artist)
-        
-# WINDOW TO DISPLAY GENRE'S TOP 5 ARTISTS AND EACH ARTIST TOP 10 SONGS
-class GenreResultsWindow(QWidget):  
-    def __init__(self, genre):
-        super().__init__()
-        self.resize(800, 1000)                                                  # window header
-        layout = QVBoxLayout()                                                  # init layout
-        genre = genre.title()
-
-        # HEADER / WINDOW TITLE
-        genre_results_label = QLabel(f"Top Artists and Songs for the {genre} Genre")
-        genre_results_label.alignment = Qt.AlignCenter
-        genre_results_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(genre_results_label)                                  #add widget to layout
-
-        # area to display results
-        self.results_text = QTextEdit()
-        self.results_text.read_only = True                                      # set it so that text cannot be edited after being displayed
-        layout.add_widget(self.results_text)                                    # add results widget to the layout
-        self.results_text.alignment = Qt.AlignCenter
-
-        # get results
-        api.genre_results(self, genre)
+        api.fetch_workout_songs(self)
         self.set_layout(layout)
 
 # ------------------ MAIN ------------------
@@ -192,9 +94,11 @@ class MyWindow(QWidget):
         group_box_2_layout = QVBoxLayout()                                      # create layout for group box 2
 
         workout_button = QPushButton("Workout")                                 # create workout button
-        group_box_2_layout.add_widget(workout_button)                           # add workout button to layout
+        workout_button.clicked.connect(self.fetch_workout_songs)
+        group_box_2_layout.add_widget(workout_button)                           # add workout button to layout  
 
         house_cleaning_button = QPushButton("House Cleaning")                   # create house cleaning button
+        house_cleaning_button.clicked.connect(self.open_house_cleaning_results_window)
         group_box_2_layout.add_widget(house_cleaning_button)                    # add house cleaning button to layout
 
         meditation_button = QPushButton("Meditation")                           # create meditation button
@@ -326,7 +230,15 @@ class MyWindow(QWidget):
     # @ everyone ---- each button needs a slot function 
 
     # -------------------- DAILY RECOMMENDATION SLOTS --------------------
+    @Slot()
+    def fetch_workout_songs(self):
+        self.workout_results_window = WorkoutResultsWindow()
+        self.workout_results_window.show()
 
+    @Slot()
+    def open_house_cleaning_results_window(self):
+        self.house_cleaning_results_window = HouseCleaningResultsWindow()
+        self.house_cleaning_results_window.show()
 
     # -------------------- GENERAL RECOMMENDATIONS SLOTS --------------------
     @Slot()
@@ -337,7 +249,7 @@ class MyWindow(QWidget):
             return
 
         # open a new window to display results
-        self.genre_results_window = GenreResultsWindow(genre)
+        self.genre_results_window = windows.GenreResultsWindow(genre)
         self.genre_results_window.show()                                        # open the window displaying the genre's songs
 
     @Slot()
@@ -348,7 +260,7 @@ class MyWindow(QWidget):
             return
 
         # open new window to display artist results
-        self.artist_results_window = ArtistResultsWindow(artist)
+        self.artist_results_window = windows.ArtistResultsWindow(artist)
         self.artist_results_window.show()
 
     @Slot()
@@ -358,7 +270,7 @@ class MyWindow(QWidget):
             return
 
         # open a new window to display mood-based results
-        self.mood_results_window = MoodResultsWindow(mood)
+        self.mood_results_window = windows.MoodResultsWindow(mood)
         self.mood_results_window.show()
 
     @Slot()
@@ -368,7 +280,7 @@ class MyWindow(QWidget):
             return
 
         # open a new window to display season-based results
-        self.season_results_window = SeasonResultsWindow(season)
+        self.season_results_window = windows.SeasonResultsWindow(season)
         self.season_results_window.show()
 
     @Slot()
@@ -378,7 +290,7 @@ class MyWindow(QWidget):
             return
 
         # open a new window to display region-based results
-        self.region_results_window = RegionResultsWindow(region)
+        self.region_results_window = windows.RegionResultsWindow(region)
         self.region_results_window.show()
 
     @Slot()
@@ -388,7 +300,7 @@ class MyWindow(QWidget):
             return
 
         # open a new window to display weather-based results
-        self.weather_results_window = WeatherResultsWindow(weather)
+        self.weather_results_window = windows.WeatherResultsWindow(weather)
         self.weather_results_window.show()
     # ---------------------------------------------------------------------
 

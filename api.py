@@ -22,7 +22,77 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
 ))
 
 # --------------------- DAILY RECOMMENDATIONS SECTION ---------------------
+def fetch_workout_songs(self):
+    # we chose predefined genres and moods for a workout playlist
+    workout_genres = ["hip-hop", "electronic", "pop", "r&b", "rock"]
+    workout_moods = ["energetic", "motivational", "upbeat", "power"]
 
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in workout_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # get songs from moods
+    for mood in workout_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+    # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
+
+def fetch_house_cleaning_songs(self):
+    # predefined genre's and mood
+    cleaning_genres = ["pop", "funk", "soul", "disco", "indie"]
+    cleaning_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in cleaning_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in cleaning_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # --------------------- GENERAL RECOMMENDATIONS SECTION ---------------------
 def weather_results(self, weather):
