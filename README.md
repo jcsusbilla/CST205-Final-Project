@@ -1,4 +1,19 @@
-# CST205-Final-Project
+# Music Recommendation App
+# JC Susbilla, Minsol Cho, Sunwoo Lee, Juan Garcia
+# CST-205 Section 1
+# 12/17/2024
+
+# HOW TO RUN:
+#   follow terminal installs in installs section
+#   navigate to directory in terminal and run interface.py
+
+# GITHUB:
+#   https://github.com/jcsusbilla/CST205-Final-Project/tree/main
+
+# TRELLO:
+#   https://trello.com/b/RJugsxNv/team-11483
+
+
 Final Project
 
 ------------------ Spotify API ------------------ 

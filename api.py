@@ -175,6 +175,21 @@ def fetch_house_cleaning_songs(self):
     # display results
     self.results_text.setHtml("<br>".join(output))
 
+# to do: meditation 
+
+# to do: studying 
+
+# to do: cooking 
+
+# to do: party 
+
+# to do: road trip 
+
+# to do: gaming 
+
+# to do: kids 
+
+# thank you guys :)
 # --------------------- GENERAL RECOMMENDATIONS SECTION ---------------------
 def weather_results(self, weather):
     # selected predefined genre's and moods and link them to regions

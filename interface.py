@@ -73,6 +73,20 @@ class WorkoutResultsWindow(QWidget):
         api.fetch_workout_songs(self)
         self.set_layout(layout)
 
+# to do: meditation window
+
+# to do: studying window
+
+# to do: cooking window
+
+# to do: party window
+
+# to do: road trip window
+
+# to do: gaming window
+
+# to do: kids window
+
 # ------------------ MAIN ------------------
 class MyWindow(QWidget):
     def __init__(self):
@@ -85,31 +99,31 @@ class MyWindow(QWidget):
         group_box_1_layout = QVBoxLayout()                                      # Create layout for Artist of the Day
 
         self.artist_header = QLabel("ARTIST OF THE DAY")
-        self.artist_header.alignment = Qt.AlignCenter                     # align everything to the center
+        self.artist_header.alignment = Qt.AlignCenter                           # align everything to the center
         self.artist_header.set_style_sheet("font-size: 40px; font-weight: bold;")            
-        group_box_1_layout.add_widget(self.artist_header)                 # add widget to layout
+        group_box_1_layout.add_widget(self.artist_header)                       # add widget to layout
 
-        # Artist Image
+        # artist Image
         self.artist_image = QLabel()
-        self.artist_image.alignment = Qt.AlignCenter
-        group_box_1_layout.add_widget(self.artist_image)
+        self.artist_image.alignment = Qt.AlignCenter                            # align to center
+        group_box_1_layout.add_widget(self.artist_image)                        # add widget to layout
 
-        # Artist Name
+        # artist Name
         self.artist_name_label = QLabel()
-        self.artist_name_label.alignment = Qt.AlignCenter
-        self.artist_name_label.set_style_sheet("font-size: 20px; font-weight: bold;")
-        group_box_1_layout.add_widget(self.artist_name_label)
+        self.artist_name_label.alignment = Qt.AlignCenter                       # align to center
+        self.artist_name_label.set_style_sheet("font-size: 20px; font-weight: bold;")       # format text
+        group_box_1_layout.add_widget(self.artist_name_label)                   # add widget to layout
 
-        # Top 5 Songs
+        # top 5 Songs
         self.top_songs_label = QLabel()
-        self.top_songs_label.alignment = Qt.AlignCenter
-        self.top_songs_label.set_style_sheet("font-size: 20px;")
-        group_box_1_layout.add_widget(self.top_songs_label)
+        self.top_songs_label.alignment = Qt.AlignCenter                         # align to center
+        self.top_songs_label.set_style_sheet("font-size: 20px;")                # format text
+        group_box_1_layout.add_widget(self.top_songs_label)                     # add widget to layout
 
-        group_box_1.set_layout(group_box_1_layout)                              # Assign layout to the group box
-        top_hbox.add_widget(group_box_1, stretch=1)                             # Add group box 1 to the horizontal layout
+        group_box_1.set_layout(group_box_1_layout)                              # assign layout to the group box
+        top_hbox.add_widget(group_box_1, stretch=1)                             # add group box 1 to the horizontal layout
 
-        # Display the artist of the day during initialization
+        # display the artist of the day during initialization
         api.artist_of_the_day(self)
 
         # -------------------- DAILY RECOMMENDATION SECTION (Minsol / Sunwoo) --------------------
@@ -125,24 +139,31 @@ class MyWindow(QWidget):
         group_box_2_layout.add_widget(house_cleaning_button)                    # add house cleaning button to layout
 
         meditation_button = QPushButton("Meditation")                           # create meditation button
+        # to do: link button to @SLOT 
         group_box_2_layout.add_widget(meditation_button)                        # add meditation button to layout
 
         studying_button = QPushButton("Studying")                               # create studying button
+        # to do: link button to @SLOT
         group_box_2_layout.add_widget(studying_button)                          # add Studying button to layout
 
         cooking_button = QPushButton("Cooking")                                 # create cooking button
+        # to do: link button to @SLOT
         group_box_2_layout.add_widget(cooking_button)                           # add Cooking button to layout
 
         party_button = QPushButton("Party")                                     # create party button
+        # to do: link button to @SLOT
         group_box_2_layout.add_widget(party_button)                             # add party button to layout
 
         road_trip_button = QPushButton("Road Trip")                             # create road trip button
+        # to do: link button to @SLOT
         group_box_2_layout.add_widget(road_trip_button)                         # add road trip button to layout
 
         gaming_button = QPushButton("Gaming")                                   # create gaming button
+        # to do: link button to @SLOT
         group_box_2_layout.add_widget(gaming_button)                            # add gaming button to layout
 
         kids_button = QPushButton("Kids")                                       # create kids button
+        # to do: link button to @SLOT
         group_box_2_layout.add_widget(kids_button)                              # add kids button to layout
 
         group_box_2.set_layout(group_box_2_layout)                              # assign layout to group box 2
@@ -161,9 +182,9 @@ class MyWindow(QWidget):
         new_release_layout = QVBoxLayout()                                      # layout for the new release content
 
         self.release_header = QLabel("POPULAR NEW RELEASE")
-        self.release_header.alignment = Qt.AlignCenter                     # align everything to the center
+        self.release_header.alignment = Qt.AlignCenter                          # align everything to the center
         self.release_header.set_style_sheet("font-size: 40px; font-weight: bold;")            
-        new_release_layout.add_widget(self.release_header)                 # add widget to layout
+        new_release_layout.add_widget(self.release_header)                      # add widget to layout
 
         # album cover
         self.new_release_image = QLabel()
@@ -277,7 +298,7 @@ class MyWindow(QWidget):
     def refresh_new_release(self):                                              
         api.display_new_release(self)
 
-    # -------------------- DAILY RECOMMENDATION SLOTS --------------------
+    # -------------------- DAILY RECOMMENDATION SLOTS (Minsol/Sunwoo) --------------------
     @Slot()
     def fetch_workout_songs(self):
         self.workout_results_window = WorkoutResultsWindow()                    # render window
@@ -288,6 +309,20 @@ class MyWindow(QWidget):
         self.house_cleaning_results_window = HouseCleaningResultsWindow()       # render window
         self.house_cleaning_results_window.show()                               # show window
 
+    # to do - meditation slot
+
+    # to do - studying slot
+
+    # to do - cooking slot
+
+    # to do - party slot
+
+    # to do - road trip slot
+
+    # to do - gaming slot
+
+    # to do - kids slot
+    
     # -------------------- GENERAL RECOMMENDATIONS SLOTS --------------------
     @Slot()
     def submit_genre(self):
@@ -349,7 +384,6 @@ class MyWindow(QWidget):
     # ---------------------------------------------------------------------
 
 # --------------------- FUNCTION CALLS ---------------------
-
 app = QApplication([])
 win = MyWindow()
 win.show()
