@@ -16,6 +16,7 @@ from PIL import Image
 from PIL.ImageQt import ImageQt
 import os
 import api
+from api import get_random_artist
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 

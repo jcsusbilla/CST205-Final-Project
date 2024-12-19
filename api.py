@@ -47,6 +47,48 @@ def fetch_and_display_genre_results(self, genre):
 
     # step 3: display result
     self.results_text.set_text("\n".join(output))                                       # concatenate the whole string output
+<<<<<<< Updated upstream
+=======
+    
+    # Random artist code
+    
+def get_random_artist():
+    """
+    Fetch a random artist, their description, and top 5 tracks using Spotify API.
+    """
+    try:
+        # Search for popular artists or use a specific genre (e.g., pop)
+        results = sp.search(q="genre:pop", type="artist", limit=50)  # Adjust genre and limit as needed
+        artists = results.get("artists", {}).get("items", [])
+
+        # Check if artists are found
+        if not artists:
+            return None
+
+        # Select a random artist
+        artist = random.choice(artists)
+        artist_id = artist["id"]
+        artist_name = artist["name"]
+        artist_description = ", ".join(artist.get("genres", ["No description available"]))
+        artist_image = artist.get("images", [{}])[0].get("url", "")
+
+        # Fetch top 5 tracks
+        top_tracks = sp.artist_top_tracks(artist_id, country="US").get("tracks", [])
+        top_tracks_names = [track["name"] for track in top_tracks[:5]]
+
+        # Return the artist's details
+        return {
+            "name": artist_name,
+            "description": artist_description,
+            "image": artist_image,
+            "top_tracks": top_tracks_names,
+        }
+
+    except Exception as e:
+        print(f"Error fetching artist data: {e}")
+        return None
+
+>>>>>>> Stashed changes
 
 
 
