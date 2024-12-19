@@ -22,7 +22,194 @@ from io import BytesIO
 from api import sp
 
 # -------------------------------- DAILY RECOMMENDATION WINDOWS --------------------------------
+class HouseCleaningResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
 
+        # Main layout
+        layout = QVBoxLayout()
+        cleaning_title_label = QLabel("50 House Cleaning Songs")
+        cleaning_title_label.alignment = Qt.AlignCenter
+        cleaning_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(cleaning_title_label)
+
+        # Text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # Fetch and display results
+        api.fetch_house_cleaning_songs(self)
+        self.set_layout(layout)
+
+class WorkoutResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        workout_title_label = QLabel("50 Workout Songs")
+        workout_title_label.alignment = Qt.AlignCenter
+        workout_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(workout_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_workout_songs(self)
+        self.set_layout(layout)
+
+class MeditationResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        meditation_title_label = QLabel("50 Meditation Songs")
+        meditation_title_label.alignment = Qt.AlignCenter
+        meditation_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(meditation_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_meditation_songs(self)
+        self.set_layout(layout)
+
+class StudyingResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        studying_title_label = QLabel("50 Studying Songs")
+        studying_title_label.alignment = Qt.AlignCenter
+        studying_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(studying_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_studying_songs(self)
+        self.set_layout(layout)
+
+class CookingResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        cooking_title_label = QLabel("50 Cooking Songs")
+        cooking_title_label.alignment = Qt.AlignCenter
+        cooking_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(cooking_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_cooking_songs(self)
+        self.set_layout(layout)
+
+class PartyResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        party_title_label = QLabel("50 Party Songs")
+        party_title_label.alignment = Qt.AlignCenter
+        party_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(party_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_party_songs(self)
+        self.set_layout(layout)
+
+class RoadTripResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        road_trip_title_label = QLabel("50 Road Trip Songs")
+        road_trip_title_label.alignment = Qt.AlignCenter
+        road_trip_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(road_trip_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_road_trip_songs(self)
+        self.set_layout(layout)
+
+class GamingResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        gaming_title_label = QLabel("50 Gaming Songs")
+        gaming_title_label.alignment = Qt.AlignCenter
+        gaming_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(gaming_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_gaming_songs(self)
+        self.set_layout(layout)
+
+class KidsResultsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 1000)
+
+        # layout
+        layout = QVBoxLayout()
+        kids_title_label = QLabel("50 Kids Songs")
+        kids_title_label.alignment = Qt.AlignCenter
+        kids_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
+        layout.add_widget(kids_title_label)
+
+        # text area for song list
+        self.results_text = QTextEdit()
+        self.results_text.read_only = True
+        layout.add_widget(self.results_text)
+
+        # display results
+        api.fetch_kids_songs(self)
+        self.set_layout(layout)
 
 
 

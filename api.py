@@ -91,7 +91,7 @@ def display_new_release(self):
         response = requests.get(image_url)                                                          # get image
         pixmap = QPixmap()                                                                          # creat pixmap
         pixmap.loadFromData(response.content)
-        self.new_release_image.setPixmap(pixmap.scaled(350, 350, Qt.KeepAspectRatio))               # set image size
+        self.new_release_image.setPixmap(pixmap.scaled(250, 250, Qt.KeepAspectRatio))               # set image size
 
     # display album details
     self.new_release_details.setText(
@@ -176,18 +176,263 @@ def fetch_house_cleaning_songs(self):
     self.results_text.setHtml("<br>".join(output))
 
 # to do: meditation 
+def fetch_meditation_songs(self):
+    # predefined genre's and mood
+    meditation_genres = ["jazz", "classical", "chill", "house"]
+    meditation_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in meditation_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in meditation_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # to do: studying 
+def fetch_studying_songs(self):
+    # predefined genre's and mood
+    studying_genres = ["pop", "classical", "chill", "study", "jazz"]
+    studying_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in studying_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in studying_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # to do: cooking 
+def fetch_cooking_songs(self):
+    # predefined genre's and mood
+    cooking_genres = ["pop", "ambient", "chill", "house", "dance"]
+    cooking_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in cooking_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in cooking_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # to do: party 
+def fetch_party_songs(self):
+    # predefined genre's and mood
+    party_genres = ["pop", "electronic", "party", "house", "rock"]
+    party_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in party_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in party_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # to do: road trip 
+def fetch_road_trip_songs(self):
+    # predefined genre's and mood
+    road_trip_genres = ["pop", "funk", "soul", "road-trip", "indie"]
+    road_trip_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in road_trip_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in road_trip_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # to do: gaming 
+def fetch_gaming_songs(self):
+    # predefined genre's and mood
+    gaming_genres = ["pop", "funk", "chill", "groove", "indie"]
+    gaming_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in gaming_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in gaming_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # to do: kids 
+def fetch_kids_songs(self):
+    # predefined genre's and mood
+    kids_genres = ["pop", "children", "reggae", "disco", "chill"]
+    kids_moods = ["happy", "upbeat", "feel-good", "cheerful"]
+
+    # set number of songs to fetch per genre/mood
+    # set to 100 total chosen songs so that we can randomize and select 50
+    songs_per_category = 10
+    total_songs = []
+
+    # get songs from genres
+    for genre in kids_genres:
+        results = sp.search(q=f"genre:{genre}", type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+     # get songs from moods
+    for mood in kids_moods:
+        results = sp.search(q=mood, type="track", limit=songs_per_category)
+        tracks = results.get("tracks", {}).get("items", [])
+        total_songs.extend(tracks)
+
+    # select 50 random songs
+    random.shuffle(total_songs)
+    selected_songs = total_songs[:50]
+
+   # format results
+    output = [
+        f"<div style='text-align: center; font-size: 18px;'>"
+        f"{i + 1}. <span style='font-weight: bold;'>{track['name']}</span> - {track['artists'][0]['name']}</div>"
+        for i, track in enumerate(selected_songs)
+    ]
+
+    # display results
+    self.results_text.setHtml("<br>".join(output))
 
 # thank you guys :)
 # --------------------- GENERAL RECOMMENDATIONS SECTION ---------------------

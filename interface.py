@@ -30,63 +30,6 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     scope='user-library-read'
 ))
 
-# ------------------ NEW WINDOWS SECTION (MINSOL/SUNWOO)------------------
-class HouseCleaningResultsWindow(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.resize(800, 1000)
-
-        # Main layout
-        layout = QVBoxLayout()
-        cleaning_title_label = QLabel("Top 50 Random House Cleaning Songs")
-        cleaning_title_label.alignment = Qt.AlignCenter
-        cleaning_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(cleaning_title_label)
-
-        # Text area for song list
-        self.results_text = QTextEdit()
-        self.results_text.read_only = True
-        layout.add_widget(self.results_text)
-
-        # Fetch and display results
-        api.fetch_house_cleaning_songs(self)
-        self.set_layout(layout)
-
-class WorkoutResultsWindow(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.resize(800, 1000)
-
-        # layout
-        layout = QVBoxLayout()
-        workout_title_label = QLabel("Top 50 Random Workout Songs")
-        workout_title_label.alignment = Qt.AlignCenter
-        workout_title_label.set_style_sheet("font-size: 40px; font-weight: bold;")
-        layout.add_widget(workout_title_label)
-
-        # text area for song list
-        self.results_text = QTextEdit()
-        self.results_text.read_only = True
-        layout.add_widget(self.results_text)
-
-        # display results
-        api.fetch_workout_songs(self)
-        self.set_layout(layout)
-
-# to do: meditation window
-
-# to do: studying window
-
-# to do: cooking window
-
-# to do: party window
-
-# to do: road trip window
-
-# to do: gaming window
-
-# to do: kids window
-
 # ------------------ MAIN ------------------
 class MyWindow(QWidget):
     def __init__(self):
@@ -100,7 +43,7 @@ class MyWindow(QWidget):
 
         self.artist_header = QLabel("ARTIST OF THE DAY")
         self.artist_header.alignment = Qt.AlignCenter                           # align everything to the center
-        self.artist_header.set_style_sheet("font-size: 40px; font-weight: bold;")            
+        self.artist_header.set_style_sheet("font-size: 30px; font-weight: bold;")            
         group_box_1_layout.add_widget(self.artist_header)                       # add widget to layout
 
         # artist Image
@@ -139,31 +82,31 @@ class MyWindow(QWidget):
         group_box_2_layout.add_widget(house_cleaning_button)                    # add house cleaning button to layout
 
         meditation_button = QPushButton("Meditation")                           # create meditation button
-        # to do: link button to @SLOT 
+        meditation_button.clicked.connect(self.open_meditation_results_window)
         group_box_2_layout.add_widget(meditation_button)                        # add meditation button to layout
 
         studying_button = QPushButton("Studying")                               # create studying button
-        # to do: link button to @SLOT
+        studying_button.clicked.connect(self.open_studying_results_window)
         group_box_2_layout.add_widget(studying_button)                          # add Studying button to layout
 
         cooking_button = QPushButton("Cooking")                                 # create cooking button
-        # to do: link button to @SLOT
+        cooking_button.clicked.connect(self.open_cooking_results_window)
         group_box_2_layout.add_widget(cooking_button)                           # add Cooking button to layout
 
         party_button = QPushButton("Party")                                     # create party button
-        # to do: link button to @SLOT
+        party_button.clicked.connect(self.open_party_results_window)
         group_box_2_layout.add_widget(party_button)                             # add party button to layout
 
         road_trip_button = QPushButton("Road Trip")                             # create road trip button
-        # to do: link button to @SLOT
+        road_trip_button.clicked.connect(self.open_road_trip_results_window)
         group_box_2_layout.add_widget(road_trip_button)                         # add road trip button to layout
 
         gaming_button = QPushButton("Gaming")                                   # create gaming button
-        # to do: link button to @SLOT
+        gaming_button.clicked.connect(self.open_gaming_results_window)
         group_box_2_layout.add_widget(gaming_button)                            # add gaming button to layout
 
         kids_button = QPushButton("Kids")                                       # create kids button
-        # to do: link button to @SLOT
+        kids_button.clicked.connect(self.open_kids_results_window)
         group_box_2_layout.add_widget(kids_button)                              # add kids button to layout
 
         group_box_2.set_layout(group_box_2_layout)                              # assign layout to group box 2
@@ -183,7 +126,7 @@ class MyWindow(QWidget):
 
         self.release_header = QLabel("POPULAR NEW RELEASE")
         self.release_header.alignment = Qt.AlignCenter                          # align everything to the center
-        self.release_header.set_style_sheet("font-size: 40px; font-weight: bold;")            
+        self.release_header.set_style_sheet("font-size: 30px; font-weight: bold;")            
         new_release_layout.add_widget(self.release_header)                      # add widget to layout
 
         # album cover
@@ -301,28 +244,55 @@ class MyWindow(QWidget):
     # -------------------- DAILY RECOMMENDATION SLOTS (Minsol/Sunwoo) --------------------
     @Slot()
     def fetch_workout_songs(self):
-        self.workout_results_window = WorkoutResultsWindow()                    # render window
+        self.workout_results_window = windows.WorkoutResultsWindow()                    # render window
         self.workout_results_window.show()                                      # show window
 
     @Slot()
     def open_house_cleaning_results_window(self):
-        self.house_cleaning_results_window = HouseCleaningResultsWindow()       # render window
+        self.house_cleaning_results_window = windows.HouseCleaningResultsWindow()       # render window
         self.house_cleaning_results_window.show()                               # show window
 
     # to do - meditation slot
+    @Slot()
+    def open_meditation_results_window(self):
+        self.house_cleaning_results_window = windows.MeditationResultsWindow()       # render window
+        self.house_cleaning_results_window.show()                               # show window
 
     # to do - studying slot
+    @Slot()
+    def open_studying_results_window(self):
+        self.house_cleaning_results_window = windows.StudyingResultsWindow()       # render window
+        self.house_cleaning_results_window.show()                               # show window
 
     # to do - cooking slot
+    @Slot()
+    def open_cooking_results_window(self):
+        self.house_cleaning_results_window = windows.CookingResultsWindow()       # render window
+        self.house_cleaning_results_window.show()                               # show window
 
     # to do - party slot
+    @Slot()
+    def open_party_results_window(self):
+        self.house_cleaning_results_window = windows.PartyResultsWindow()       # render window
+        self.house_cleaning_results_window.show()                               # show window
 
     # to do - road trip slot
-
+    @Slot()
+    def open_road_trip_results_window(self):
+        self.house_cleaning_results_window = windows.RoadTripResultsWindow()       # render window
+        self.house_cleaning_results_window.show()                               # show window
+        
     # to do - gaming slot
+    @Slot()
+    def open_gaming_results_window(self):
+        self.house_cleaning_results_window = windows.GamingResultsWindow()       # render window
+        self.house_cleaning_results_window.show()                               # show window
 
     # to do - kids slot
-    
+    @Slot()
+    def open_kids_results_window(self):
+        self.house_cleaning_results_window = windows.KidsResultsWindow()       # render window
+        self.house_cleaning_results_window.show()                               # show window
     # -------------------- GENERAL RECOMMENDATIONS SLOTS --------------------
     @Slot()
     def submit_genre(self):
